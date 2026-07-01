@@ -46,6 +46,7 @@ const TEST_STREAMS = [
 
 const T_SPORTS_STREAM = 'http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8';
 const D_SPORTS_STREAM = 'https://1nyaler.streamhostingcdn.top/stream/106/index.m3u8';
+const KOORA_TV_STREAM = 'https://sh.kooraa36.cfd/endroom1_360/index.m3u8';
 
 export default function Hero({ onPlayStream }) {
   const [streamUrl, setStreamUrl] = useState('');
@@ -134,7 +135,7 @@ export default function Hero({ onPlayStream }) {
           display: 'flex',
           gap: '24px',
           width: '100%',
-          maxWidth: '720px',
+          maxWidth: '1080px',
           justifyContent: 'center',
           flexWrap: 'wrap'
         }}>
@@ -318,6 +319,100 @@ export default function Hero({ onPlayStream }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span className="live-indicator-dot" />
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.05em' }}>LIVE</span>
+              </div>
+              <div style={{
+                background: 'var(--text-primary)',
+                color: 'var(--bg-color)',
+                width: '34px',
+                height: '34px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="m7 4 12 8-12 8V4Z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Koora TV Channel Card */}
+          <div
+            onClick={() => onPlayStream(KOORA_TV_STREAM)}
+            className="glass-glow"
+            style={{
+              flex: '1 1 280px',
+              maxWidth: '340px',
+              padding: '24px',
+              borderRadius: '24px',
+              cursor: 'pointer',
+              border: '1px solid rgba(59, 130, 246, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%)',
+              position: 'relative',
+              boxShadow: 'var(--card-shadow), 0 4px 20px rgba(59, 130, 246, 0.05)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-6px)';
+              e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
+              e.currentTarget.style.boxShadow = '0 16px 36px rgba(59, 130, 246, 0.18)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.25)';
+              e.currentTarget.style.boxShadow = 'var(--card-shadow), 0 4px 20px rgba(59, 130, 246, 0.05)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #0369a1 100%)',
+                width: '96px',
+                height: '56px',
+                borderRadius: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                overflow: 'hidden',
+                flexShrink: 0,
+                color: '#ffffff',
+                fontSize: '1.5rem',
+                fontWeight: 900,
+                letterSpacing: '0.02em'
+              }}>
+                KTV
+              </div>
+              <div>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '1.35rem',
+                  fontWeight: 800,
+                  color: 'var(--text-primary)',
+                  margin: 0,
+                  letterSpacing: '-0.02em'
+                }}>
+                  Koora TV
+                </h3>
+                <p style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--text-secondary)',
+                  margin: '2px 0 0 0',
+                  fontWeight: 500
+                }}>
+                  Live Sports HD
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="live-indicator-dot" />
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '0.05em' }}>LIVE</span>
               </div>
               <div style={{
                 background: 'var(--text-primary)',
