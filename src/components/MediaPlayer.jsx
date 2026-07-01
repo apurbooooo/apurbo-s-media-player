@@ -72,6 +72,14 @@ const RefreshIcon = () => (
   </svg>
 );
 
+const getPlaybackUrl = (streamUrl) => {
+  if (streamUrl.startsWith('http://')) {
+    return `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`;
+  }
+
+  return streamUrl;
+};
+
 export default function MediaPlayer({ url, onBack }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -116,6 +124,7 @@ export default function MediaPlayer({ url, onBack }) {
     // Sync volume setting initially
     video.volume = volume;
     video.muted = isMuted;
+    const playbackUrl = getPlaybackUrl(url);
 
     if (Hls.isSupported()) {
       hls = new Hls({
@@ -124,7 +133,7 @@ export default function MediaPlayer({ url, onBack }) {
         maxBufferSize: 30 * 1024 * 1024, // 30MB buffer size
       });
       
-      hls.loadSource(url);
+      hls.loadSource(playbackUrl);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -155,7 +164,7 @@ export default function MediaPlayer({ url, onBack }) {
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Native Apple device support (Safari)
-      video.src = url;
+      video.src = playbackUrl;
       video.addEventListener('loadedmetadata', () => {
         video.play().catch((err) => {
           console.warn("Autoplay was blocked by Safari:", err);
