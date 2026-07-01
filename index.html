@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Apurbo Media Player</title>
+    <script>
+      {
+        const colorScheme = localStorage.getItem("theme");
+        if (colorScheme === "light" || colorScheme === "dark") {
+          document.documentElement.classList.add(colorScheme);
+          document.querySelector('meta[name="color-scheme"]').content = colorScheme;
+        } else {
+          // Defaults to system preference, will resolve automatically via color-scheme: light dark
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.classList.add(systemTheme);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
