@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import MediaPlayer from './components/MediaPlayer';
 import Footer from './components/Footer';
 import Login from './components/Login';
+import BackgroundSlideshow from './components/BackgroundSlideshow';
 
 function SecurityNoticeModal({ onClose }) {
   return (
@@ -122,11 +123,8 @@ function App() {
 
   return (
     <>
-      {/* Background ambient glow shapes */}
-      <div className="bg-glow-container">
-        <div className="bg-glow-1"></div>
-        <div className="bg-glow-2"></div>
-      </div>
+      {/* Background slideshow */}
+      <BackgroundSlideshow />
 
       {isLoggedIn ? (
         <>

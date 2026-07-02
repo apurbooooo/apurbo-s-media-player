@@ -128,6 +128,81 @@ const FEATURED_CHANNELS = [
   }
 ];
 
+const BANGLA_CHANNELS = [
+  {
+    name: 'Channel 24',
+    logoText: 'C24',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8',
+    borderColor: 'rgba(14, 165, 233, 0.25)',
+    hoverBorderColor: 'rgba(14, 165, 233, 0.6)',
+    shadowColor: 'rgba(14, 165, 233, 0.18)',
+    softShadowColor: 'rgba(14, 165, 233, 0.05)',
+    liveColor: '#0ea5e9',
+    background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)'
+  },
+  {
+    name: 'Independent TV',
+    logoText: 'IND',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8',
+    borderColor: 'rgba(245, 158, 11, 0.25)',
+    hoverBorderColor: 'rgba(245, 158, 11, 0.6)',
+    shadowColor: 'rgba(245, 158, 11, 0.18)',
+    softShadowColor: 'rgba(245, 158, 11, 0.05)',
+    liveColor: '#f59e0b',
+    background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+  },
+  {
+    name: 'BTV',
+    logoText: 'BTV',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8',
+    borderColor: 'rgba(34, 197, 94, 0.25)',
+    hoverBorderColor: 'rgba(34, 197, 94, 0.6)',
+    shadowColor: 'rgba(34, 197, 94, 0.18)',
+    softShadowColor: 'rgba(34, 197, 94, 0.05)',
+    liveColor: '#22c55e',
+    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(20, 184, 166, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
+  },
+  {
+    name: 'ATN Bangla',
+    logoText: 'ATN',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8',
+    borderColor: 'rgba(217, 70, 239, 0.25)',
+    hoverBorderColor: 'rgba(217, 70, 239, 0.6)',
+    shadowColor: 'rgba(217, 70, 239, 0.18)',
+    softShadowColor: 'rgba(217, 70, 239, 0.05)',
+    liveColor: '#d946ef',
+    background: 'linear-gradient(135deg, rgba(217, 70, 239, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #d946ef 0%, #c026d3 100%)'
+  },
+  {
+    name: 'NTV',
+    logoText: 'NTV',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8',
+    borderColor: 'rgba(59, 130, 246, 0.25)',
+    hoverBorderColor: 'rgba(59, 130, 246, 0.6)',
+    shadowColor: 'rgba(59, 130, 246, 0.18)',
+    softShadowColor: 'rgba(59, 130, 246, 0.05)',
+    liveColor: '#3b82f6',
+    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+  },
+  {
+    name: 'Channel I',
+    logoText: 'Ch I',
+    streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8',
+    borderColor: 'rgba(16, 185, 129, 0.25)',
+    hoverBorderColor: 'rgba(16, 185, 129, 0.6)',
+    shadowColor: 'rgba(16, 185, 129, 0.18)',
+    softShadowColor: 'rgba(16, 185, 129, 0.05)',
+    liveColor: '#10b981',
+    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(34, 197, 94, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+  }
+];
+
 const ChannelCard = ({ channel, onPlayStream, logoError, onLogoError }) => (
   <div
     onClick={() => onPlayStream(channel.streamUrl)}
@@ -239,6 +314,7 @@ export default function Hero({ onPlayStream }) {
   const [streamUrl, setStreamUrl] = useState('');
   const [error, setError] = useState('');
   const [logoErrors, setLogoErrors] = useState({});
+  const [isBanglaExpanded, setIsBanglaExpanded] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -496,6 +572,88 @@ export default function Hero({ onPlayStream }) {
               <QuickLinkIcon />
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Bangla Channels Live Section */}
+      <div style={{
+        marginTop: '28px',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '24px'
+      }}>
+        {/* Toggle Button */}
+        <button
+          type="button"
+          onClick={() => setIsBanglaExpanded(!isBanglaExpanded)}
+          className="premium-button"
+          style={{
+            padding: '14px 28px',
+            borderRadius: '24px',
+            fontSize: '1.05rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: isBanglaExpanded 
+              ? '0 0 24px rgba(var(--accent-rgb), 0.4)' 
+              : '0 4px 14px rgba(var(--accent-rgb), 0.25)',
+            border: 'none',
+            cursor: 'pointer',
+            background: 'linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%)',
+            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            transform: isBanglaExpanded ? 'scale(1.02)' : 'scale(1)',
+            outline: 'none'
+          }}
+        >
+          {/* Custom Television/Channel Icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.4s ease', transform: isBanglaExpanded ? 'rotate(180deg)' : 'none' }}>
+            <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
+            <polyline points="17 2 12 7 7 2" />
+          </svg>
+          Bangla Channels Live
+          <span style={{ 
+            fontSize: '0.8rem',
+            opacity: 0.8,
+            background: 'rgba(255,255,255,0.2)',
+            padding: '2px 8px',
+            borderRadius: '10px',
+            fontWeight: 800
+          }}>6</span>
+        </button>
+
+        {/* Collapsible Container */}
+        <div className={`bangla-channels-collapsible ${isBanglaExpanded ? 'expanded' : ''}`}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            alignItems: 'center',
+            width: '100%',
+            padding: '10px 0 20px 0'
+          }}>
+            <h4 className="bangla-channels-title">Select a Live Bangla Channel</h4>
+            <div style={{
+              display: 'flex',
+              gap: '20px',
+              width: '100%',
+              maxWidth: '1080px',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              {BANGLA_CHANNELS.map((channel) => (
+                <ChannelCard
+                  key={channel.name}
+                  channel={channel}
+                  onPlayStream={onPlayStream}
+                  logoError={Boolean(logoErrors[channel.logoSrc])}
+                  onLogoError={() => setLogoErrors((errors) => ({ ...errors, [channel.logoSrc]: true }))}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

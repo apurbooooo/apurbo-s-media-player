@@ -619,3 +619,119 @@ input[type="range"].custom-slider::-moz-range-thumb:hover {
   box-shadow: 0 0 8px #ef4444;
   animation: pulse-live 1.8s infinite ease-in-out;
 }
+
+/* Background Slideshow */
+.background-slideshow-container {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.background-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.8s ease-in-out;
+  transform: scale(1.02);
+}
+
+.background-slide.active {
+  opacity: 1;
+  animation: kenburns-slow 36s linear infinite alternate;
+}
+
+.background-slideshow-overlay {
+  position: absolute;
+  inset: 0;
+  transition: background-color 0.5s ease, backdrop-filter 0.5s ease;
+  z-index: 1;
+}
+
+/* Dark mode overlay: rich, deep dark blue-grey/black with a subtle blue/green gradient overlay */
+html.dark .background-slideshow-overlay,
+:root:not(.light) .background-slideshow-overlay {
+  background: radial-gradient(circle at center, rgba(8, 9, 13, 0.72) 0%, rgba(5, 6, 8, 0.88) 100%);
+  backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* Light mode overlay: clean slate-white overlay that makes black/indigo text pop */
+html.light .background-slideshow-overlay {
+  background: radial-gradient(circle at center, rgba(248, 250, 252, 0.82) 0%, rgba(241, 245, 249, 0.93) 100%);
+  backdrop-filter: blur(8px) saturate(110%);
+}
+
+@keyframes kenburns-slow {
+  0% {
+    transform: scale(1.02) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.10) translate(-1.5%, -1%);
+  }
+}
+
+/* Bangla Channels Collapsible Drawer */
+.bangla-channels-collapsible {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  width: 100%;
+}
+
+.bangla-channels-collapsible.expanded {
+  max-height: 1200px;
+  opacity: 1;
+}
+
+.bangla-channels-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+/* Bangla Channel Card Premium Hover Effects */
+.bangla-channel-card {
+  position: relative;
+  background: var(--surface-glow);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--card-shadow);
+}
+
+.bangla-channel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(var(--accent-rgb), 0.15);
+}
+
+.bangla-channel-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-color), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.bangla-channel-card:hover::after {
+  opacity: 1;
+}
+
