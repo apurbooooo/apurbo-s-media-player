@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" role="img" aria-labelledby="title desc">
+  <title id="title">Somoy TV logo</title>
+  <desc id="desc">A red Somoy TV inspired mark with white Bengali lettering and a world map band.</desc>
+  <rect width="480" height="280" fill="#111827"/>
+  <g transform="translate(0 0)">
+    <rect x="0" y="0" width="155" height="150" fill="#ef3124"/>
+    <rect x="162" y="0" width="156" height="150" fill="#ef3124"/>
+    <rect x="325" y="0" width="155" height="150" fill="#ef3124"/>
+    <text x="77.5" y="104" fill="#ffffff" font-family="Noto Sans Bengali, SolaimanLipi, Arial, sans-serif" font-size="88" font-weight="900" text-anchor="middle">স</text>
+    <text x="240" y="104" fill="#ffffff" font-family="Noto Sans Bengali, SolaimanLipi, Arial, sans-serif" font-size="88" font-weight="900" text-anchor="middle">ম</text>
+    <text x="402.5" y="104" fill="#ffffff" font-family="Noto Sans Bengali, SolaimanLipi, Arial, sans-serif" font-size="88" font-weight="900" text-anchor="middle">য়</text>
+  </g>
+  <rect x="0" y="158" width="480" height="122" fill="#a3a3a3"/>
+  <path fill="#111827" opacity="0.96" d="M18 196l24-8 36 6 20 16 34 3 21 16 44 8 32 23-41 12-47-9-36 6-35-19-42-5-18-25zM173 189l37-18 55 2 34 18 30-6 54 18-18 20-49 2-23 20-50-2-38 12-35-22 20-21zM335 174l29-11 42 9 20 25 35 8-10 31-42-5-24 18-37-11-6-29-25-15z"/>
+  <rect x="312" y="158" width="65" height="122" fill="#ef3124" opacity="0.86"/>
+  <path fill="#ffffff" opacity="0.18" d="M312 158h65v122h-65z"/>
+</svg>

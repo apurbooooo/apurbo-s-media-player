@@ -673,6 +673,17 @@ export default function MediaPlayer({ url, onBack }) {
         </div>
       </div>
 
+      <p style={{
+        margin: '12px auto 0',
+        maxWidth: '620px',
+        textAlign: 'center',
+        color: 'var(--text-tertiary)',
+        fontSize: '0.82rem',
+        lineHeight: 1.5
+      }}>
+        Tip: Please be patient. Your stream may take a few seconds to start.
+      </p>
+
       <div style={{
         display: 'flex',
         justifyContent: 'center',

@@ -21,14 +21,6 @@ const QuickLinkIcon = () => (
   </svg>
 );
 
-const SportsIcon = ({ color = '#ef4444' }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M6 12A6 6 0 0 1 18 12" />
-    <path d="M12 6A6 6 0 0 1 12 18" />
-  </svg>
-);
-
 const TEST_STREAMS = [
   {
     name: 'Mux Test Stream (Big Buck Bunny)',
@@ -47,10 +39,206 @@ const TEST_STREAMS = [
 const T_SPORTS_STREAM = 'http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8';
 const WORLDCUP_TV_STREAM = 'https://andro.226503.xyz/checklist/androstreamlivebs1.m3u8?ref=fifa';
 
+const FEATURED_CHANNELS = [
+  {
+    name: 'tsports',
+    logoText: 'TS',
+    logoSrc: '/tsports.png',
+    streamUrl: T_SPORTS_STREAM,
+    borderColor: 'rgba(239, 68, 68, 0.25)',
+    hoverBorderColor: 'rgba(239, 68, 68, 0.6)',
+    shadowColor: 'rgba(239, 68, 68, 0.18)',
+    softShadowColor: 'rgba(239, 68, 68, 0.05)',
+    liveColor: '#ef4444',
+    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+  },
+  {
+    name: 'worldcupTV',
+    logoText: 'WCTV',
+    streamUrl: WORLDCUP_TV_STREAM,
+    borderColor: 'rgba(245, 158, 11, 0.25)',
+    hoverBorderColor: 'rgba(245, 158, 11, 0.6)',
+    shadowColor: 'rgba(245, 158, 11, 0.18)',
+    softShadowColor: 'rgba(245, 158, 11, 0.05)',
+    liveColor: '#f59e0b',
+    background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)'
+  },
+  {
+    name: 'Somoy TV',
+    logoText: 'SOMOY',
+    logoSrc: '/somoy-tv.svg',
+    streamUrl: 'https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8',
+    borderColor: 'rgba(14, 165, 233, 0.25)',
+    hoverBorderColor: 'rgba(14, 165, 233, 0.6)',
+    shadowColor: 'rgba(14, 165, 233, 0.18)',
+    softShadowColor: 'rgba(14, 165, 233, 0.05)',
+    liveColor: '#0ea5e9',
+    background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(34, 197, 94, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)'
+  },
+  {
+    name: 'Fussball TV1',
+    logoText: 'FTV1',
+    streamUrl: 'https://edge22.776740.ir.cdn.ir/hls2/sport.m3u8',
+    borderColor: 'rgba(34, 197, 94, 0.25)',
+    hoverBorderColor: 'rgba(34, 197, 94, 0.6)',
+    shadowColor: 'rgba(34, 197, 94, 0.18)',
+    softShadowColor: 'rgba(34, 197, 94, 0.05)',
+    liveColor: '#22c55e',
+    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(20, 184, 166, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #22c55e 0%, #15803d 100%)'
+  },
+  {
+    name: 'Fox TV',
+    logoText: 'FOX',
+    streamUrl: 'https://1nyaler.streamhostingcdn.top/stream/26/index.m3u8',
+    borderColor: 'rgba(249, 115, 22, 0.25)',
+    hoverBorderColor: 'rgba(249, 115, 22, 0.6)',
+    shadowColor: 'rgba(249, 115, 22, 0.18)',
+    softShadowColor: 'rgba(249, 115, 22, 0.05)',
+    liveColor: '#f97316',
+    background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(234, 179, 8, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #f97316 0%, #c2410c 100%)'
+  },
+  {
+    name: 'beIN Sports',
+    logoText: 'beIN',
+    streamUrl: 'https://andro.evrenesoglu57.click/checklist/androstreamliveexn4.m3u8',
+    borderColor: 'rgba(168, 85, 247, 0.25)',
+    hoverBorderColor: 'rgba(168, 85, 247, 0.6)',
+    shadowColor: 'rgba(168, 85, 247, 0.18)',
+    softShadowColor: 'rgba(168, 85, 247, 0.05)',
+    liveColor: '#a855f7',
+    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)'
+  },
+  {
+    name: 'beIN Sports 2',
+    logoText: 'beIN2',
+    streamUrl: 'https://1nyaler.streamhostingcdn.top/stream/23/index.m3u8',
+    borderColor: 'rgba(99, 102, 241, 0.25)',
+    hoverBorderColor: 'rgba(99, 102, 241, 0.6)',
+    shadowColor: 'rgba(99, 102, 241, 0.18)',
+    softShadowColor: 'rgba(99, 102, 241, 0.05)',
+    liveColor: '#6366f1',
+    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #6366f1 0%, #3730a3 100%)'
+  }
+];
+
+const ChannelCard = ({ channel, onPlayStream, logoError, onLogoError }) => (
+  <div
+    onClick={() => onPlayStream(channel.streamUrl)}
+    className="glass-glow"
+    style={{
+      flex: '1 1 280px',
+      maxWidth: '340px',
+      padding: '24px',
+      borderRadius: '24px',
+      cursor: 'pointer',
+      border: `1px solid ${channel.borderColor}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+      background: channel.background,
+      position: 'relative',
+      boxShadow: `var(--card-shadow), 0 4px 20px ${channel.softShadowColor}`
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-6px)';
+      e.currentTarget.style.borderColor = channel.hoverBorderColor;
+      e.currentTarget.style.boxShadow = `0 16px 36px ${channel.shadowColor}`;
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.borderColor = channel.borderColor;
+      e.currentTarget.style.boxShadow = `var(--card-shadow), 0 4px 20px ${channel.softShadowColor}`;
+    }}
+  >
+    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
+      <div style={{
+        background: channel.logoBackground,
+        width: '96px',
+        height: '56px',
+        borderRadius: '14px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: `0 4px 12px ${channel.shadowColor}`,
+        overflow: 'hidden',
+        flexShrink: 0,
+        color: '#ffffff',
+        fontSize: channel.logoText.length > 4 ? '0.95rem' : '1.15rem',
+        fontWeight: 900,
+        letterSpacing: '0.02em'
+      }}>
+        {channel.logoSrc && !logoError ? (
+          <img
+            src={channel.logoSrc}
+            alt={`${channel.name} logo`}
+            onError={onLogoError}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '3px', background: '#ffffff' }}
+          />
+        ) : (
+          channel.logoText
+        )}
+      </div>
+      <div>
+        <h3 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: '1.35rem',
+          fontWeight: 800,
+          color: 'var(--text-primary)',
+          margin: 0,
+          letterSpacing: '-0.02em'
+        }}>
+          {channel.name}
+        </h3>
+        <p style={{
+          fontSize: '0.82rem',
+          color: 'var(--text-secondary)',
+          margin: '2px 0 0 0',
+          fontWeight: 500
+        }}>
+          Live Sports HD
+        </p>
+      </div>
+    </div>
+
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <span
+          className="live-indicator-dot"
+          style={{ backgroundColor: channel.liveColor, boxShadow: `0 0 8px ${channel.liveColor}` }}
+        />
+        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: channel.liveColor, textTransform: 'uppercase', letterSpacing: '0.05em' }}>LIVE</span>
+      </div>
+      <div style={{
+        background: 'var(--text-primary)',
+        color: 'var(--bg-color)',
+        width: '34px',
+        height: '34px',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+      }}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="m7 4 12 8-12 8V4Z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+);
+
 export default function Hero({ onPlayStream }) {
   const [streamUrl, setStreamUrl] = useState('');
   const [error, setError] = useState('');
-  const [tsportsLogoError, setTsportsLogoError] = useState(false);
+  const [logoErrors, setLogoErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -137,199 +325,15 @@ export default function Hero({ onPlayStream }) {
           justifyContent: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* tsports Channel Card */}
-          <div
-            onClick={() => onPlayStream(T_SPORTS_STREAM)}
-            className="glass-glow"
-            style={{
-              flex: '1 1 280px',
-              maxWidth: '340px',
-              padding: '24px',
-              borderRadius: '24px',
-              cursor: 'pointer',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)',
-              position: 'relative',
-              boxShadow: 'var(--card-shadow), 0 4px 20px rgba(239, 68, 68, 0.05)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-6px)';
-              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)';
-              e.currentTarget.style.boxShadow = '0 16px 36px rgba(239, 68, 68, 0.18)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.25)';
-              e.currentTarget.style.boxShadow = 'var(--card-shadow), 0 4px 20px rgba(239, 68, 68, 0.05)';
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
-                width: '96px',
-                height: '56px',
-                borderRadius: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
-                overflow: 'hidden',
-                flexShrink: 0
-              }}>
-                {/* Try loading PNG logo, fallback to SVG if error/empty */}
-                {!tsportsLogoError ? (
-                  <img
-                    src="/tsports.png"
-                    alt="tsports logo"
-                    onError={() => setTsportsLogoError(true)}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '3px', background: '#ffffff' }}
-                  />
-                ) : (
-                  <SportsIcon color="#ffffff" />
-                )}
-              </div>
-              <div>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '1.35rem',
-                  fontWeight: 800,
-                  color: 'var(--text-primary)',
-                  margin: 0,
-                  letterSpacing: '-0.02em'
-                }}>
-                  tsports
-                </h3>
-                <p style={{
-                  fontSize: '0.82rem',
-                  color: 'var(--text-secondary)',
-                  margin: '2px 0 0 0',
-                  fontWeight: 500
-                }}>
-                  Live Sports HD
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span className="live-indicator-dot" />
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.05em' }}>LIVE</span>
-              </div>
-              <div style={{
-                background: 'var(--text-primary)',
-                color: 'var(--bg-color)',
-                width: '34px',
-                height: '34px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="m7 4 12 8-12 8V4Z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* worldcupTV Channel Card */}
-          <div
-            onClick={() => onPlayStream(WORLDCUP_TV_STREAM)}
-            className="glass-glow"
-            style={{
-              flex: '1 1 280px',
-              maxWidth: '340px',
-              padding: '24px',
-              borderRadius: '24px',
-              cursor: 'pointer',
-              border: '1px solid rgba(245, 158, 11, 0.25)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.04) 100%)',
-              position: 'relative',
-              boxShadow: 'var(--card-shadow), 0 4px 20px rgba(245, 158, 11, 0.05)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-6px)';
-              e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.6)';
-              e.currentTarget.style.boxShadow = '0 16px 36px rgba(245, 158, 11, 0.18)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.25)';
-              e.currentTarget.style.boxShadow = 'var(--card-shadow), 0 4px 20px rgba(245, 158, 11, 0.05)';
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)',
-                width: '96px',
-                height: '56px',
-                borderRadius: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-                overflow: 'hidden',
-                flexShrink: 0,
-                color: '#ffffff',
-                fontSize: '1.05rem',
-                fontWeight: 900,
-                letterSpacing: '0.02em'
-              }}>
-                WCTV
-              </div>
-              <div>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '1.35rem',
-                  fontWeight: 800,
-                  color: 'var(--text-primary)',
-                  margin: 0,
-                  letterSpacing: '-0.02em'
-                }}>
-                  worldcupTV
-                </h3>
-                <p style={{
-                  fontSize: '0.82rem',
-                  color: 'var(--text-secondary)',
-                  margin: '2px 0 0 0',
-                  fontWeight: 500
-                }}>
-                  Live Sports HD
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span className="live-indicator-dot" />
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>LIVE</span>
-              </div>
-              <div style={{
-                background: 'var(--text-primary)',
-                color: 'var(--bg-color)',
-                width: '34px',
-                height: '34px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="m7 4 12 8-12 8V4Z" />
-                </svg>
-              </div>
-            </div>
-          </div>
+          {FEATURED_CHANNELS.map((channel) => (
+            <ChannelCard
+              key={channel.name}
+              channel={channel}
+              onPlayStream={onPlayStream}
+              logoError={Boolean(logoErrors[channel.logoSrc])}
+              onLogoError={() => setLogoErrors((errors) => ({ ...errors, [channel.logoSrc]: true }))}
+            />
+          ))}
         </div>
       </div>
 
