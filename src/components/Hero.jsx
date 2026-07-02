@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import UpcomingMatch from './UpcomingMatch';
 
 const LinkIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, marginRight: '8px', flexShrink: 0 }}>
@@ -373,6 +374,8 @@ export default function Hero({ onPlayStream }) {
           Select one of our featured live channels or paste any custom <code>.m3u8</code> streaming link below to play.
         </p>
       </div>
+
+      <UpcomingMatch />
 
       {/* Featured Channel Section */}
       <div style={{
