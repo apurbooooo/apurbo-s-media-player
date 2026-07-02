@@ -5,6 +5,7 @@ import MediaPlayer from './components/MediaPlayer';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import BackgroundSlideshow from './components/BackgroundSlideshow';
+import UpcomingMatch from './components/UpcomingMatch';
 
 function SecurityNoticeModal({ onClose }) {
   return (
@@ -136,6 +137,8 @@ function App() {
             isLoggedIn={isLoggedIn}
             onLogout={handleLogout}
           />
+
+          {!activeUrl && <UpcomingMatch />}
 
           {/* Layout Content wrapper with standard alignment */}
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
