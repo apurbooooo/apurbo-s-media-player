@@ -413,6 +413,88 @@ export default function Hero({ onPlayStream }) {
         </div>
       </div>
 
+      {/* Bangla Channels Live Section */}
+      <div style={{
+        marginTop: '28px',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '24px'
+      }}>
+        {/* Toggle Button */}
+        <button
+          type="button"
+          onClick={() => setIsBanglaExpanded(!isBanglaExpanded)}
+          className="premium-button"
+          style={{
+            padding: '14px 28px',
+            borderRadius: '24px',
+            fontSize: '1.05rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: isBanglaExpanded 
+              ? '0 0 24px rgba(var(--accent-rgb), 0.4)' 
+              : '0 4px 14px rgba(var(--accent-rgb), 0.25)',
+            border: 'none',
+            cursor: 'pointer',
+            background: 'linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%)',
+            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            transform: isBanglaExpanded ? 'scale(1.02)' : 'scale(1)',
+            outline: 'none'
+          }}
+        >
+          {/* Custom Television/Channel Icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.4s ease', transform: isBanglaExpanded ? 'rotate(180deg)' : 'none' }}>
+            <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
+            <polyline points="17 2 12 7 7 2" />
+          </svg>
+          Bangla Channels Live
+          <span style={{ 
+            fontSize: '0.8rem',
+            opacity: 0.8,
+            background: 'rgba(255,255,255,0.2)',
+            padding: '2px 8px',
+            borderRadius: '10px',
+            fontWeight: 800
+          }}>6</span>
+        </button>
+
+        {/* Collapsible Container */}
+        <div className={`bangla-channels-collapsible ${isBanglaExpanded ? 'expanded' : ''}`}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            alignItems: 'center',
+            width: '100%',
+            padding: '10px 0 20px 0'
+          }}>
+            <h4 className="bangla-channels-title">Select a Live Bangla Channel</h4>
+            <div style={{
+              display: 'flex',
+              gap: '20px',
+              width: '100%',
+              maxWidth: '1080px',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              {BANGLA_CHANNELS.map((channel) => (
+                <ChannelCard
+                  key={channel.name}
+                  channel={channel}
+                  onPlayStream={onPlayStream}
+                  logoError={Boolean(logoErrors[channel.logoSrc])}
+                  onLogoError={() => setLogoErrors((errors) => ({ ...errors, [channel.logoSrc]: true }))}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* URL Input Form Container (Now positioned below the channels) */}
       <div style={{
         width: '100%',
@@ -575,87 +657,6 @@ export default function Hero({ onPlayStream }) {
         </div>
       </div>
 
-      {/* Bangla Channels Live Section */}
-      <div style={{
-        marginTop: '28px',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '24px'
-      }}>
-        {/* Toggle Button */}
-        <button
-          type="button"
-          onClick={() => setIsBanglaExpanded(!isBanglaExpanded)}
-          className="premium-button"
-          style={{
-            padding: '14px 28px',
-            borderRadius: '24px',
-            fontSize: '1.05rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            boxShadow: isBanglaExpanded 
-              ? '0 0 24px rgba(var(--accent-rgb), 0.4)' 
-              : '0 4px 14px rgba(var(--accent-rgb), 0.25)',
-            border: 'none',
-            cursor: 'pointer',
-            background: 'linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%)',
-            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-            transform: isBanglaExpanded ? 'scale(1.02)' : 'scale(1)',
-            outline: 'none'
-          }}
-        >
-          {/* Custom Television/Channel Icon */}
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.4s ease', transform: isBanglaExpanded ? 'rotate(180deg)' : 'none' }}>
-            <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
-            <polyline points="17 2 12 7 7 2" />
-          </svg>
-          Bangla Channels Live
-          <span style={{ 
-            fontSize: '0.8rem',
-            opacity: 0.8,
-            background: 'rgba(255,255,255,0.2)',
-            padding: '2px 8px',
-            borderRadius: '10px',
-            fontWeight: 800
-          }}>6</span>
-        </button>
-
-        {/* Collapsible Container */}
-        <div className={`bangla-channels-collapsible ${isBanglaExpanded ? 'expanded' : ''}`}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            alignItems: 'center',
-            width: '100%',
-            padding: '10px 0 20px 0'
-          }}>
-            <h4 className="bangla-channels-title">Select a Live Bangla Channel</h4>
-            <div style={{
-              display: 'flex',
-              gap: '20px',
-              width: '100%',
-              maxWidth: '1080px',
-              justifyContent: 'center',
-              flexWrap: 'wrap'
-            }}>
-              {BANGLA_CHANNELS.map((channel) => (
-                <ChannelCard
-                  key={channel.name}
-                  channel={channel}
-                  onPlayStream={onPlayStream}
-                  logoError={Boolean(logoErrors[channel.logoSrc])}
-                  onLogoError={() => setLogoErrors((errors) => ({ ...errors, [channel.logoSrc]: true }))}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }
