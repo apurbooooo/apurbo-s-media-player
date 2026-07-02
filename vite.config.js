@@ -12,30 +12,34 @@ function footballApiProxyPlugin(apiKey) {
       return cachedMatch;
     }
 
-    if (!apiKey || apiKey === 'YOUR_FOOTBALL_DATA_API_KEY') {
-      throw new Error('API key is not configured');
+    if (!apiKey) {
+      throw { status: 500, message: 'API key is not configured in .env', body: 'Missing API key' };
     }
 
-    const apiResponse = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
+    const apiResponse = await fetch('https://api.football-data.org/v4/competitions/WC/matches?season=2026&status=SCHEDULED', {
       headers: {
         'X-Auth-Token': apiKey
       }
     });
 
+    const responseBody = await apiResponse.text();
+
     if (!apiResponse.ok) {
-      throw new Error(`API responded with status ${apiResponse.status}`);
+      throw { status: apiResponse.status, message: `API responded with status ${apiResponse.status}`, body: responseBody };
     }
 
-    const data = await apiResponse.json();
+    let data;
+    try {
+      data = JSON.parse(responseBody);
+    } catch (e) {
+      throw { status: 500, message: 'Failed to parse JSON response from Football API', body: responseBody };
+    }
     
-    // Valid active match statuses: scheduled/timed or currently live
-    const validStatuses = ['SCHEDULED', 'TIMED', 'LIVE', 'IN_PLAY', 'PAUSED'];
     const upcoming = (data.matches || [])
-      .filter(m => validStatuses.includes(m.status))
       .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
 
     if (upcoming.length === 0) {
-      throw new Error('No upcoming matches found in schedule');
+      throw { status: 404, message: 'No upcoming matches found in schedule', body: responseBody };
     }
 
     cachedMatch = upcoming[0];
@@ -53,8 +57,12 @@ function footballApiProxyPlugin(apiKey) {
       res.end(JSON.stringify(match));
     } catch (err) {
       console.error('[football-api-proxy] Error:', err.message);
-      res.statusCode = err.message === 'API key is not configured' ? 500 : 502;
-      res.end(JSON.stringify({ error: err.message || 'Failed to fetch match schedule' }));
+      res.statusCode = err.status || 502;
+      res.end(JSON.stringify({ 
+        error: err.message || 'Failed to fetch match schedule', 
+        status: err.status || 502,
+        body: err.body || 'No additional details available'
+      }));
     }
   };
 

@@ -735,85 +735,108 @@ html.light .background-slideshow-overlay {
   opacity: 1;
 }
 
-/* Redesigned Upcoming Match Widget Styles */
+/* ═══════════════════════════════════════════════════════
+   Upcoming Match Widget
+   ═══════════════════════════════════════════════════════ */
+
+/* ---- wrapper (positioning) ---- */
 .upcoming-match-wrapper {
-  width: 100%;
   pointer-events: none;
+  z-index: 95;
 }
 
+/* Desktop: fixed left, 60px from edge, 40px below navbar */
+@media (min-width: 1340px) {
+  .upcoming-match-wrapper {
+    position: fixed;
+    top: 120px;          /* ~40px below a ~80px navbar */
+    left: 60px;
+    width: 310px;
+  }
+}
+
+/* Tablet / Mobile: flow in page, centered */
+@media (max-width: 1339px) {
+  .upcoming-match-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+    margin: 4px auto 20px;
+  }
+  .upcoming-match-card {
+    width: 100%;
+    max-width: 340px;
+  }
+}
+
+/* ---- card ---- */
 .upcoming-match-card {
   background: rgba(15, 15, 20, 0.55);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 18px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   padding: 16px 20px;
   color: #f8fafc;
   font-family: var(--font-sans);
-  z-index: 95;
   display: flex;
   flex-direction: column;
   gap: 12px;
   pointer-events: auto;
   box-sizing: border-box;
   text-align: left;
-  
-  /* Animations */
   animation: widget-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-             widget-float 6s ease-in-out infinite alternate;
+             widget-float 6s ease-in-out 0.8s infinite alternate;
 }
 
-@keyframes widget-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(12px) scale(0.97);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes widget-float {
-  0% {
-    transform: translateY(0px);
-  }
-  100% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Loading and Error states styling */
-.upcoming-match-card.loading-state,
-.upcoming-match-card.error-state {
+/* loading / error state centering */
+.upcoming-match-card.um-loading {
   align-items: center;
   justify-content: center;
-  min-height: 180px;
+  min-height: 160px;
 }
 
-.loading-spinner-container,
-.error-message-container {
+.um-center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 10px;
   text-align: center;
   flex: 1;
-  width: 100%;
+  justify-content: center;
 }
 
-.spinner {
-  width: 24px;
-  height: 24px;
+.um-spinner {
+  width: 22px;
+  height: 22px;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-top-color: #22c55e;
   border-radius: 50%;
   animation: spin-loader 0.8s linear infinite;
 }
 
-.upcoming-match-header {
+.um-muted {
+  font-size: 0.8rem;
+  color: rgba(248, 250, 252, 0.45);
+}
+
+/* ---- keyframes ---- */
+@keyframes widget-fade-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes widget-float {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-4px); }
+}
+
+/* ---- header / sub-header ---- */
+.um-header {
   font-family: var(--font-display);
   font-size: 0.72rem;
   font-weight: 800;
@@ -824,10 +847,7 @@ html.light .background-slideshow-overlay {
   padding-bottom: 8px;
 }
 
-.upcoming-match-subheader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.um-subheader {
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 700;
@@ -836,87 +856,82 @@ html.light .background-slideshow-overlay {
   color: rgba(248, 250, 252, 0.6);
 }
 
-.upcoming-match-teams {
+/* ---- teams row ---- */
+.um-teams {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 6px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1rem;
-  gap: 8px;
+  font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.02);
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.upcoming-match-team {
+.um-team {
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 
-.upcoming-match-team.home {
-  justify-content: flex-start;
-}
-
-.upcoming-match-team.away {
+.um-team.um-away {
   justify-content: flex-end;
   text-align: right;
 }
 
-.upcoming-match-flag {
-  width: 28px;
-  height: 20px;
+.um-flag {
+  width: 26px;
+  height: 18px;
   object-fit: contain;
   border-radius: 3px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
 }
 
-.team-flag-emoji {
-  font-size: 1.2rem;
-}
-
-.team-name {
+.um-team-name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 80px;
 }
 
-.upcoming-match-vs {
-  font-size: 0.75rem;
+.um-vs {
+  font-size: 0.7rem;
   color: rgba(248, 250, 252, 0.3);
   font-weight: 800;
-  padding: 0 4px;
+  flex-shrink: 0;
 }
 
-.upcoming-match-info-grid {
+/* ---- info grid ---- */
+.um-info {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  font-size: 0.8rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding-bottom: 10px;
 }
 
-.upcoming-match-info-item {
+.um-info-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.info-label {
-  font-size: 0.65rem;
+.um-label {
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: rgba(248, 250, 252, 0.4);
   font-weight: 600;
 }
 
-.info-value {
+.um-value {
+  font-size: 0.8rem;
   color: rgba(248, 250, 252, 0.9);
   font-weight: 500;
   overflow: hidden;
@@ -924,21 +939,19 @@ html.light .background-slideshow-overlay {
   white-space: nowrap;
 }
 
-.info-value.stage-badge {
+.um-stage {
   color: #38bdf8;
   font-weight: 600;
 }
 
-.upcoming-match-countdown-section {
+/* ---- countdown ---- */
+.um-countdown-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.upcoming-match-countdown-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.um-countdown-label {
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -946,23 +959,23 @@ html.light .background-slideshow-overlay {
   color: rgba(248, 250, 252, 0.55);
 }
 
-.upcoming-match-countdown-grid {
+.um-countdown-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
 }
 
-.upcoming-match-countdown-box {
+.um-cd-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 8px;
-  padding: 6px 2px;
+  padding: 5px 2px;
 }
 
-.upcoming-match-countdown-number {
+.um-cd-num {
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 800;
@@ -971,16 +984,17 @@ html.light .background-slideshow-overlay {
   text-shadow: 0 0 10px rgba(34, 197, 94, 0.25);
 }
 
-.upcoming-match-countdown-unit {
-  font-size: 0.55rem;
+.um-cd-unit {
+  font-size: 0.52rem;
   text-transform: uppercase;
   color: rgba(248, 250, 252, 0.35);
   font-weight: 600;
   margin-top: 1px;
 }
 
-.upcoming-match-live-badge {
-  display: inline-flex;
+/* ---- LIVE badge ---- */
+.um-live {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -992,36 +1006,5 @@ html.light .background-slideshow-overlay {
   font-size: 0.85rem;
   padding: 6px;
   border-radius: 8px;
-  width: 100%;
   animation: live-pulse-badge 2s infinite ease-in-out;
 }
-
-/* Responsiveness and positioning */
-@media (min-width: 1340px) {
-  .upcoming-match-wrapper {
-    position: absolute;
-    top: 112px;
-    left: 48px;
-    width: 320px;
-    z-index: 95;
-    pointer-events: none;
-  }
-}
-
-@media (max-width: 1339px) {
-  .upcoming-match-wrapper {
-    position: relative;
-    margin: 10px auto 20px auto;
-    max-width: none;
-    display: flex;
-    justify-content: center;
-    padding: 0 24px;
-    z-index: 95;
-    pointer-events: none;
-  }
-  .upcoming-match-card {
-    width: 100%;
-    max-width: 340px;
-  }
-}
-

@@ -1,252 +1,171 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchUpcomingMatch } from '../services/footballService';
 
 export default function UpcomingMatch() {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState({ expired: false });
-  const loadedNextRef = useRef(false);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const reloadedRef = useRef(false);
 
-  // Function to load match data from the service
-  const loadMatchData = async () => {
+  const loadMatch = useCallback(async () => {
     const data = await fetchUpcomingMatch();
-    if (data) {
-      setMatch(data);
-    } else {
-      setMatch(null);
-    }
+    setMatch(data);
     setLoading(false);
-  };
-
-  // Poll for new match data every 5 minutes (300000 ms)
-  useEffect(() => {
-    loadMatchData();
-    const pollInterval = setInterval(loadMatchData, 5 * 60 * 1000);
-    return () => clearInterval(pollInterval);
+    reloadedRef.current = false;
   }, []);
 
-  // Update countdown timer every second
+  // Initial load + 5-minute poll
   useEffect(() => {
-    if (!match || !match.utcDate) return;
+    loadMatch();
+    const id = setInterval(loadMatch, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [loadMatch]);
 
-    const calculateTimeLeft = () => {
-      const difference = +new Date(match.utcDate) - +new Date();
-      
-      // If the match status is one of the active live states from API, or countdown expired
-      const isLiveStatus = ['LIVE', 'IN_PLAY', 'PAUSED'].includes(match.status);
+  // 1-second countdown tick
+  useEffect(() => {
+    if (!match?.utcDate) return;
 
-      if (difference <= 0 || isLiveStatus) {
-        return { expired: true };
-      }
-
+    const calc = () => {
+      const isLive = ['LIVE', 'IN_PLAY', 'PAUSED'].includes(match.status);
+      const diff = new Date(match.utcDate) - Date.now();
+      if (diff <= 0 || isLive) return { expired: true };
       return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-        expired: false
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff / 3600000) % 24),
+        minutes: Math.floor((diff / 60000) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+        expired: false,
       };
     };
 
-    loadedNextRef.current = false;
-    setTimeLeft(calculateTimeLeft());
-
-    const timer = setInterval(() => {
-      const newTime = calculateTimeLeft();
-      setTimeLeft(newTime);
-
-      // If it just expired, reload to get the next match fixture from the API
-      if (newTime.expired && !loadedNextRef.current) {
-        loadedNextRef.current = true;
-        loadMatchData();
+    setTimeLeft(calc());
+    const id = setInterval(() => {
+      const t = calc();
+      setTimeLeft(t);
+      if (t.expired && !reloadedRef.current) {
+        reloadedRef.current = true;
+        loadMatch();
       }
     }, 1000);
+    return () => clearInterval(id);
+  }, [match, loadMatch]);
 
-    return () => clearInterval(timer);
-  }, [match]);
+  // Helpers
+  const pad = (n) => String(n ?? 0).padStart(2, '0');
 
-  const formatNumber = (num) => String(num).padStart(2, '0');
+  const formatStage = (s) =>
+    s ? s.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
 
-  // Format stage to title case (e.g., GROUP_STAGE -> Group Stage)
-  const formatStage = (stage) => {
-    if (!stage) return '';
-    return stage
-      .toLowerCase()
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  // Convert and format date for Asia/Dhaka
-  const getFormattedDate = (utcDateString) => {
+  const bdtDate = (iso) => {
     try {
-      const date = new Date(utcDateString);
       return new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Dhaka',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }).format(date);
-    } catch {
-      return '';
-    }
+        timeZone: 'Asia/Dhaka', year: 'numeric', month: 'long', day: 'numeric',
+      }).format(new Date(iso));
+    } catch { return ''; }
   };
 
-  // Convert and format time for Asia/Dhaka
-  const getFormattedTime = (utcDateString) => {
+  const bdtTime = (iso) => {
     try {
-      const date = new Date(utcDateString);
       return new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Dhaka',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      }).format(date);
-    } catch {
-      return '';
-    }
+        timeZone: 'Asia/Dhaka', hour: 'numeric', minute: '2-digit', hour12: true,
+      }).format(new Date(iso));
+    } catch { return ''; }
   };
 
+  // --- Loading state ---
   if (loading) {
     return (
-      <div className="upcoming-match-wrapper">
-        <div className="upcoming-match-card loading-state">
-          <div className="upcoming-match-header">
-            <span>🏆 FIFA World Cup 2026</span>
-          </div>
-          <div className="loading-spinner-container">
-            <div className="spinner" />
-            <span style={{ fontSize: '0.85rem', color: 'rgba(248, 250, 252, 0.5)' }}>Loading schedule...</span>
+      <div className="upcoming-match-wrapper" id="upcoming-match-widget">
+        <div className="upcoming-match-card um-loading">
+          <div className="um-header">🏆 FIFA World Cup 2026</div>
+          <div className="um-center">
+            <div className="um-spinner" />
+            <span className="um-muted">Loading schedule…</span>
           </div>
         </div>
       </div>
     );
   }
 
-  // If match schedule is unavailable, show "Schedule unavailable"
+  // --- No data — show "Schedule unavailable" ---
   if (!match) {
     return (
-      <div className="upcoming-match-wrapper">
-        <div className="upcoming-match-card error-state">
-          <div className="upcoming-match-header">
-            <span>🏆 FIFA World Cup 2026</span>
-          </div>
-          <div className="error-message-container">
-            <span style={{ fontSize: '1.8rem', opacity: 0.8 }} role="img" aria-label="warning">⚠️</span>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'rgba(248, 250, 252, 0.95)', margin: '4px 0 2px 0' }}>
-              Schedule unavailable
-            </h3>
-            <p style={{ fontSize: '0.78rem', color: 'rgba(248, 250, 252, 0.45)', margin: 0 }}>
-              Could not retrieve latest fixture data.
-            </p>
+      <div className="upcoming-match-wrapper" id="upcoming-match-widget">
+        <div className="upcoming-match-card um-loading">
+          <div className="um-header">🏆 FIFA World Cup 2026</div>
+          <div className="um-center">
+            <span style={{ fontSize: '1.6rem' }}>⚠️</span>
+            <span className="um-muted">Schedule unavailable</span>
           </div>
         </div>
       </div>
     );
   }
 
+  // --- Main card ---
   return (
-    <div className="upcoming-match-wrapper">
+    <div className="upcoming-match-wrapper" id="upcoming-match-widget">
       <div className="upcoming-match-card">
-        <div className="upcoming-match-header">
-          <span>🏆 FIFA World Cup 2026</span>
-        </div>
-        
-        <div className="upcoming-match-subheader">
-          <span role="img" aria-label="soccer ball">⚽</span> Upcoming Match
-        </div>
+        {/* Header */}
+        <div className="um-header">🏆 FIFA World Cup 2026</div>
+        <div className="um-subheader">⚽ Upcoming Match</div>
 
-        <div className="upcoming-match-teams">
-          <div className="upcoming-match-team home">
-            {match.homeTeam.crest ? (
-              <img 
-                src={match.homeTeam.crest} 
-                alt={`${match.homeTeam.name} logo`} 
-                className="upcoming-match-flag"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
-            ) : (
-              <span className="team-flag-emoji" role="img" aria-label="flag">⚽</span>
+        {/* Teams */}
+        <div className="um-teams">
+          <div className="um-team">
+            {match.homeTeam?.crest && (
+              <img src={match.homeTeam.crest} alt="" className="um-flag"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             )}
-            <span className="team-name">{match.homeTeam.shortName || match.homeTeam.name}</span>
+            <span className="um-team-name">{match.homeTeam?.shortName || match.homeTeam?.name || 'TBD'}</span>
           </div>
-
-          <span className="upcoming-match-vs">VS</span>
-
-          <div className="upcoming-match-team away">
-            <span className="team-name">{match.awayTeam.shortName || match.awayTeam.name}</span>
-            {match.awayTeam.crest ? (
-              <img 
-                src={match.awayTeam.crest} 
-                alt={`${match.awayTeam.name} logo`} 
-                className="upcoming-match-flag"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
-            ) : (
-              <span className="team-flag-emoji" role="img" aria-label="flag">⚽</span>
+          <span className="um-vs">VS</span>
+          <div className="um-team um-away">
+            <span className="um-team-name">{match.awayTeam?.shortName || match.awayTeam?.name || 'TBD'}</span>
+            {match.awayTeam?.crest && (
+              <img src={match.awayTeam.crest} alt="" className="um-flag"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             )}
           </div>
         </div>
 
-        <div className="upcoming-match-info-grid">
-          <div className="upcoming-match-info-item">
-            <span className="info-label">📅 Match Date</span>
-            <span className="info-value">{getFormattedDate(match.utcDate)}</span>
+        {/* Info grid */}
+        <div className="um-info">
+          <div className="um-info-item">
+            <span className="um-label">📅 Date</span>
+            <span className="um-value">{bdtDate(match.utcDate)}</span>
           </div>
-          
-          <div className="upcoming-match-info-item">
-            <span className="info-label">🕒 Kickoff (BDT)</span>
-            <span className="info-value">{getFormattedTime(match.utcDate)} (BDT)</span>
+          <div className="um-info-item">
+            <span className="um-label">🕒 Kickoff</span>
+            <span className="um-value">{bdtTime(match.utcDate)} BDT</span>
           </div>
-
-          {match.venue && (
-            <div className="upcoming-match-info-item">
-              <span className="info-label">📍 Venue</span>
-              <span className="info-value">{match.venue}</span>
-            </div>
-          )}
-
-          <div className="upcoming-match-info-item">
-            <span className="info-label">Stage</span>
-            <span className="info-value stage-badge">{formatStage(match.stage)}</span>
+          <div className="um-info-item" style={{ gridColumn: '1 / -1' }}>
+            <span className="um-label">🏟️ Stage</span>
+            <span className="um-value um-stage">{formatStage(match.stage)}</span>
           </div>
         </div>
 
-        {timeLeft.expired ? (
-          <div className="upcoming-match-live-badge">
+        {/* Countdown or LIVE */}
+        {timeLeft?.expired ? (
+          <div className="um-live">
             <span className="live-indicator-dot" />
-            <span>🔴 LIVE NOW</span>
+            🔴 LIVE NOW
           </div>
         ) : (
-          <div className="upcoming-match-countdown-section">
-            <div className="upcoming-match-countdown-label">
-              <span role="img" aria-label="hourglass">⏳</span> Starts In
-            </div>
-            <div className="upcoming-match-countdown-grid">
-              <div className="upcoming-match-countdown-box">
-                <span className="upcoming-match-countdown-number">
-                  {formatNumber(timeLeft.days || 0)}
-                </span>
-                <span className="upcoming-match-countdown-unit">Days</span>
-              </div>
-              <div className="upcoming-match-countdown-box">
-                <span className="upcoming-match-countdown-number">
-                  {formatNumber(timeLeft.hours || 0)}
-                </span>
-                <span className="upcoming-match-countdown-unit">Hours</span>
-              </div>
-              <div className="upcoming-match-countdown-box">
-                <span className="upcoming-match-countdown-number">
-                  {formatNumber(timeLeft.minutes || 0)}
-                </span>
-                <span className="upcoming-match-countdown-unit">Mins</span>
-              </div>
-              <div className="upcoming-match-countdown-box">
-                <span className="upcoming-match-countdown-number">
-                  {formatNumber(timeLeft.seconds || 0)}
-                </span>
-                <span className="upcoming-match-countdown-unit">Secs</span>
-              </div>
+          <div className="um-countdown-section">
+            <div className="um-countdown-label">⏳ Starts In</div>
+            <div className="um-countdown-grid">
+              {[
+                [timeLeft?.days, 'Days'],
+                [timeLeft?.hours, 'Hours'],
+                [timeLeft?.minutes, 'Mins'],
+                [timeLeft?.seconds, 'Secs'],
+              ].map(([val, label]) => (
+                <div className="um-cd-box" key={label}>
+                  <span className="um-cd-num">{pad(val)}</span>
+                  <span className="um-cd-unit">{label}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
