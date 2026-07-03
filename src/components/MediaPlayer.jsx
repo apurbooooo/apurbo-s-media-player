@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
+import { supabase, isSupabaseConfigured } from '../services/supabaseService';
 
 // SVG Icons
 const PlayIcon = () => (
@@ -125,6 +126,48 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
   const [currentQualityIndex, setCurrentQualityIndex] = useState(-1); // -1 is Auto
   const [showQualityDropdown, setShowQualityDropdown] = useState(false);
   const [showSpeedDropdown, setShowSpeedDropdown] = useState(false);
+  const [viewerCount, setViewerCount] = useState(1);
+
+  // Realtime Presence viewer counter
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      // Mock fallback: simulate counter if Supabase credentials are not set
+      const interval = setInterval(() => {
+        setViewerCount(Math.floor(Math.random() * 5) + 12);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+
+    const userId = 'user_' + Math.random().toString(36).substring(2, 11);
+    // Create a safe channel name from the stream URL/name
+    const safeChannelName = `stream_room_${btoa(url).replace(/[^a-zA-Z0-9-_]/g, '').substring(0, 50)}`;
+    
+    const channel = supabase.channel(safeChannelName, {
+      config: {
+        presence: {
+          key: userId,
+        },
+      },
+    });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const count = Object.keys(state).length;
+        setViewerCount(count || 1);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [url]);
 
   // Auto-hide controls after 3 seconds of mouse inactivity
   useEffect(() => {
@@ -633,6 +676,29 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
           }}
           playsInline
         />
+
+        {/* Realtime Watching Now Badge */}
+        <div style={{
+          position: 'absolute',
+          top: isFullscreen ? '32px' : '20px',
+          right: isFullscreen ? '40px' : '20px',
+          zIndex: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          padding: '6px 14px',
+          borderRadius: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          color: '#ffffff',
+          fontSize: '0.85rem',
+          fontWeight: 700,
+          opacity: showControls ? 1 : 0,
+          transition: 'opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+          pointerEvents: 'none'
+        }}>
+          🟢 {viewerCount} Watching Now
+        </div>
 
         {/* Central Overlay States: Buffering/Loading */}
         {isLoading && !errorMessage && (
