@@ -59,6 +59,7 @@ const FEATURED_CHANNELS = [
   {
     name: 'BTV',
     logoText: 'BTV',
+    logoSrc: '/btv-logo.png',
     streamUrl: BTV_STREAM,
     borderColor: 'rgba(34, 197, 94, 0.25)',
     hoverBorderColor: 'rgba(34, 197, 94, 0.6)',
@@ -83,7 +84,7 @@ const FEATURED_CHANNELS = [
   {
     name: 'Somoy TV',
     logoText: 'SOMOY',
-    logoSrc: '/somoy-tv.svg',
+    logoSrc: '/somoy-tv-logo.png',
     streamUrl: 'https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8',
     borderColor: 'rgba(14, 165, 233, 0.25)',
     hoverBorderColor: 'rgba(14, 165, 233, 0.6)',
@@ -96,7 +97,7 @@ const FEATURED_CHANNELS = [
   {
     name: 'Somoy TV 2',
     logoText: 'SOMOY 2',
-    logoSrc: '/somoy-tv.svg',
+    logoSrc: '/somoy-tv-logo.png',
     streamUrl: SOMOY_TV_2_STREAM,
     borderColor: 'rgba(59, 130, 246, 0.25)',
     hoverBorderColor: 'rgba(59, 130, 246, 0.6)',
@@ -184,6 +185,7 @@ const BANGLA_CHANNELS = [
   {
     name: 'BTV',
     logoText: 'BTV',
+    logoSrc: '/btv-logo.png',
     streamUrl: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8',
     borderColor: 'rgba(34, 197, 94, 0.25)',
     hoverBorderColor: 'rgba(34, 197, 94, 0.6)',
