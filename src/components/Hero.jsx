@@ -38,6 +38,8 @@ const TEST_STREAMS = [
 ];
 
 const T_SPORTS_STREAM = 'http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8';
+const BTV_STREAM = 'http://198.195.239.50:8095/btv/tracks-v1a1/mono.m3u8';
+const SOMOY_TV_2_STREAM = 'http://198.195.239.50:8095/somoyTv/tracks-v1a1/mono.m3u8';
 const WORLDCUP_TV_STREAM = 'https://andro.226503.xyz/checklist/androstreamlivebs1.m3u8?ref=fifa';
 
 const FEATURED_CHANNELS = [
@@ -53,6 +55,18 @@ const FEATURED_CHANNELS = [
     liveColor: '#ef4444',
     background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)',
     logoBackground: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+  },
+  {
+    name: 'BTV',
+    logoText: 'BTV',
+    streamUrl: BTV_STREAM,
+    borderColor: 'rgba(34, 197, 94, 0.25)',
+    hoverBorderColor: 'rgba(34, 197, 94, 0.6)',
+    shadowColor: 'rgba(34, 197, 94, 0.18)',
+    softShadowColor: 'rgba(34, 197, 94, 0.05)',
+    liveColor: '#22c55e',
+    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(20, 184, 166, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
   },
   {
     name: 'worldcupTV',
@@ -78,6 +92,19 @@ const FEATURED_CHANNELS = [
     liveColor: '#0ea5e9',
     background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(34, 197, 94, 0.04) 100%)',
     logoBackground: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)'
+  },
+  {
+    name: 'Somoy TV 2',
+    logoText: 'SOMOY 2',
+    logoSrc: '/somoy-tv.svg',
+    streamUrl: SOMOY_TV_2_STREAM,
+    borderColor: 'rgba(59, 130, 246, 0.25)',
+    hoverBorderColor: 'rgba(59, 130, 246, 0.6)',
+    shadowColor: 'rgba(59, 130, 246, 0.18)',
+    softShadowColor: 'rgba(59, 130, 246, 0.05)',
+    liveColor: '#3b82f6',
+    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%)',
+    logoBackground: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
   },
   {
     name: 'Fussball TV1',
