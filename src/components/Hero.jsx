@@ -205,7 +205,7 @@ const BANGLA_CHANNELS = [
 
 const ChannelCard = ({ channel, onPlayStream, logoError, onLogoError }) => (
   <div
-    onClick={() => onPlayStream(channel.streamUrl)}
+    onClick={() => onPlayStream(channel.streamUrl, channel.name)}
     className="glass-glow"
     style={{
       flex: '1 1 280px',
@@ -330,13 +330,13 @@ export default function Hero({ onPlayStream }) {
     }
 
     setError('');
-    onPlayStream(cleanUrl);
+    onPlayStream(cleanUrl, 'Custom Stream');
   };
 
-  const handleQuickClick = (url) => {
+  const handleQuickClick = (url, name) => {
     setStreamUrl(url);
     setError('');
-    onPlayStream(url);
+    onPlayStream(url, name);
   };
 
   return (
@@ -623,7 +623,7 @@ export default function Hero({ onPlayStream }) {
           {TEST_STREAMS.map((stream, idx) => (
             <button
               key={idx}
-              onClick={() => handleQuickClick(stream.url)}
+              onClick={() => handleQuickClick(stream.url, stream.name)}
               className="glass"
               style={{
                 padding: '8px 14px',

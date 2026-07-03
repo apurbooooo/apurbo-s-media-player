@@ -14,6 +14,20 @@ const PauseIcon = () => (
   </svg>
 );
 
+const SkipBackIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="5 4 15 12 5 20 5 4" />
+    <line x1="19" y1="5" x2="19" y2="19" />
+  </svg>
+);
+
+const SkipForwardIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="19 12 9 4 9 20 19 12" />
+    <line x1="5" y1="5" x2="5" y2="19" />
+  </svg>
+);
+
 const VolumeHighIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
@@ -72,9 +86,24 @@ const RefreshIcon = () => (
   </svg>
 );
 
-export default function MediaPlayer({ url, onBack }) {
+const SettingsIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
+);
+
+const AspectRatioIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="12" x="2" y="6" rx="2" />
+    <path d="M12 2v20" />
+  </svg>
+);
+
+export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
+  const hlsRef = useRef(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -89,12 +118,22 @@ export default function MediaPlayer({ url, onBack }) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
+  // Premium Controls States
+  const [aspectRatio, setAspectRatio] = useState('contain'); // contain, cover, fill
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const [qualityLevels, setQualityLevels] = useState([]);
+  const [currentQualityIndex, setCurrentQualityIndex] = useState(-1); // -1 is Auto
+  const [showQualityDropdown, setShowQualityDropdown] = useState(false);
+  const [showSpeedDropdown, setShowSpeedDropdown] = useState(false);
+
   // Auto-hide controls after 3 seconds of mouse inactivity
   useEffect(() => {
     let timeout;
     if (showControls && isPlaying) {
       timeout = setTimeout(() => {
         setShowControls(false);
+        setShowQualityDropdown(false);
+        setShowSpeedDropdown(false);
       }, 3000);
     }
     return () => clearTimeout(timeout);
@@ -102,6 +141,73 @@ export default function MediaPlayer({ url, onBack }) {
 
   const handleMouseMove = () => {
     setShowControls(true);
+  };
+
+  // Keyboard Shortcuts Handler
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const video = videoRef.current;
+      if (!video || document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+
+      switch (e.key.toLowerCase()) {
+        case ' ':
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'j':
+        case 'arrowleft':
+          e.preventDefault();
+          skipTime(-10);
+          break;
+        case 'l':
+        case 'arrowright':
+          e.preventDefault();
+          skipTime(10);
+          break;
+        case 'arrowup':
+          e.preventDefault();
+          adjustVolume(0.1);
+          break;
+        case 'arrowdown':
+          e.preventDefault();
+          adjustVolume(-0.1);
+          break;
+        case 'f':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case 'm':
+          e.preventDefault();
+          toggleMute();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, isMuted, volume, isFullscreen]);
+
+  const skipTime = (amount) => {
+    const video = videoRef.current;
+    if (!video) return;
+    const newTime = Math.max(0, Math.min(video.duration || Infinity, video.currentTime + amount));
+    video.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const adjustVolume = (amount) => {
+    const video = videoRef.current;
+    if (!video) return;
+    const newVol = Math.max(0, Math.min(1, video.volume + amount));
+    video.volume = newVol;
+    setVolume(newVol);
+    if (newVol > 0 && isMuted) {
+      video.muted = false;
+      setIsMuted(false);
+    }
   };
 
   // Initialize HLS / Native Video Playback
@@ -112,6 +218,8 @@ export default function MediaPlayer({ url, onBack }) {
 
     setIsLoading(true);
     setErrorMessage(null);
+    setQualityLevels([]);
+    setCurrentQualityIndex(-1);
 
     // Sync volume setting initially
     video.volume = volume;
@@ -124,10 +232,20 @@ export default function MediaPlayer({ url, onBack }) {
         maxBufferSize: 30 * 1024 * 1024, // 30MB buffer size
       });
       
+      hlsRef.current = hls;
       hls.loadSource(url);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        // Parse quality levels
+        const levels = hls.levels.map((level, idx) => ({
+          index: idx,
+          name: level.name || `${level.height}p`,
+          height: level.height,
+          bitrate: level.bitrate
+        }));
+        setQualityLevels(levels);
+
         video.play().catch((err) => {
           console.warn("Autoplay was blocked by browser policies:", err);
           setIsPlaying(false);
@@ -170,6 +288,7 @@ export default function MediaPlayer({ url, onBack }) {
     return () => {
       if (hls) {
         hls.destroy();
+        hlsRef.current = null;
       }
     };
   }, [url, reloadKey]);
@@ -339,6 +458,31 @@ export default function MediaPlayer({ url, onBack }) {
     }
   };
 
+  // Toggle Aspect Ratio
+  const cycleAspectRatio = () => {
+    const ratios = ['contain', 'cover', 'fill'];
+    const nextIdx = (ratios.indexOf(aspectRatio) + 1) % ratios.length;
+    setAspectRatio(ratios[nextIdx]);
+  };
+
+  // Set Playback Speed
+  const handleSpeedChange = (speed) => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = speed;
+    setPlaybackSpeed(speed);
+    setShowSpeedDropdown(false);
+  };
+
+  // Set Quality Level
+  const handleQualityChange = (levelIndex) => {
+    if (hlsRef.current) {
+      hlsRef.current.currentLevel = levelIndex;
+      setCurrentQualityIndex(levelIndex);
+    }
+    setShowQualityDropdown(false);
+  };
+
   // Helper Time Formatter
   const formatTime = (timeInSeconds) => {
     if (isNaN(timeInSeconds) || timeInSeconds === Infinity) return '00:00';
@@ -370,40 +514,91 @@ export default function MediaPlayer({ url, onBack }) {
       margin: '0 auto 40px',
       padding: '0 24px'
     }}>
-      {/* Return Navigation */}
+      {/* Upper Navigation and Beautiful Header */}
       <div style={{
         display: 'flex',
-        justifyContent: 'flex-start',
-        marginBottom: '16px'
+        flexDirection: 'column',
+        gap: '20px',
+        marginBottom: '24px'
       }}>
-        <button
-          onClick={onBack}
-          className="glass"
-          style={{
-            display: 'inline-flex',
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}>
+          <button
+            onClick={onBack}
+            className="glass"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '10px 18px',
+              borderRadius: '12px',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--surface-border)',
+              transition: 'all 0.2s ease',
+              outline: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateX(-4px)';
+              e.currentTarget.style.borderColor = 'var(--accent-color)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateX(0)';
+              e.currentTarget.style.borderColor = 'var(--surface-border)';
+            }}
+          >
+            <BackIcon />
+            Back to Home
+          </button>
+
+          {/* Premium Ambient Stream Title */}
+          <div style={{
+            display: 'flex',
             alignItems: 'center',
-            padding: '10px 18px',
-            borderRadius: '12px',
-            fontSize: '0.9rem',
-            fontWeight: 500,
-            cursor: 'pointer',
-            color: 'var(--text-primary)',
+            gap: '12px',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid var(--surface-border)',
-            transition: 'all 0.2s ease',
-            outline: 'none'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateX(-4px)';
-            e.currentTarget.style.borderColor = 'var(--accent-color)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateX(0)';
-            e.currentTarget.style.borderColor = 'var(--surface-border)';
-          }}
-        >
-          <BackIcon />
-          Back to URL Input
-        </button>
+            padding: '8px 18px',
+            borderRadius: '20px',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <span style={{
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              backgroundColor: '#ef4444',
+              display: 'inline-block',
+              boxShadow: '0 0 10px #ef4444',
+              animation: 'pulse-live 1.8s infinite'
+            }} />
+            <span style={{
+              fontSize: '0.9rem',
+              fontWeight: 800,
+              color: 'var(--text-primary)',
+              letterSpacing: '0.02em',
+              textTransform: 'uppercase'
+            }}>
+              Now Streaming:
+            </span>
+            <span style={{
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              color: 'var(--accent-color)',
+              background: 'linear-gradient(90deg, var(--accent-color) 0%, var(--accent-hover) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.01em'
+            }}>
+              {name}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Media Player Container */}
@@ -415,10 +610,10 @@ export default function MediaPlayer({ url, onBack }) {
           position: 'relative',
           width: '100%',
           aspectRatio: '16/9',
-          borderRadius: isFullscreen ? '0px' : '20px',
+          borderRadius: isFullscreen ? '0px' : '24px',
           overflow: 'hidden',
           backgroundColor: '#000000',
-          boxShadow: isFullscreen ? 'none' : 'var(--card-shadow)',
+          boxShadow: isFullscreen ? 'none' : '0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 40px rgba(var(--accent-rgb), 0.1)',
           border: isFullscreen ? 'none' : '1px solid var(--surface-border)',
           display: 'flex',
           alignItems: 'center',
@@ -434,7 +629,7 @@ export default function MediaPlayer({ url, onBack }) {
           style={{
             width: '100%',
             height: '100%',
-            objectFit: 'contain'
+            objectFit: aspectRatio
           }}
           playsInline
         />
@@ -454,24 +649,23 @@ export default function MediaPlayer({ url, onBack }) {
               width: '50px',
               height: '50px',
               border: '4px solid rgba(255, 255, 255, 0.1)',
-              borderTopColor: '#ffffff',
+              borderTopColor: 'var(--accent-color)',
               borderRadius: '50%',
               animation: 'spin-loader 0.8s linear infinite'
             }} />
             <span style={{
               color: '#ffffff',
               fontSize: '0.85rem',
-              fontWeight: 500,
-              letterSpacing: '0.05em',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+              textShadow: '0 2px 8px rgba(0,0,0,0.6)'
             }}>
-              Buffering stream
+              Optimizing Stream
             </span>
           </div>
         )}
 
-        {/* Central Overlay States: Play/Pause quick flash overlay on click */}
         {/* Central Overlay States: Fatal Errors */}
         {errorMessage && (
           <div style={{
@@ -487,23 +681,24 @@ export default function MediaPlayer({ url, onBack }) {
             zIndex: 15
           }}>
             <div style={{
-              backgroundColor: 'rgba(239, 68, 68, 0.15)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              padding: '20px',
-              borderRadius: '16px',
-              maxWidth: '460px',
+              backgroundColor: 'rgba(239, 68, 68, 0.12)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              padding: '28px',
+              borderRadius: '20px',
+              maxWidth: '480px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '12px'
+              gap: '16px',
+              backdropFilter: 'blur(12px)'
             }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
-              <h3 style={{ color: '#ef4444', fontFamily: 'var(--font-display)', margin: 0 }}>Playback Error</h3>
-              <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem', margin: 0 }}>
+              <h3 style={{ color: '#ef4444', fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.4rem', fontWeight: 800 }}>Playback Interrupted</h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.92rem', margin: 0, lineHeight: 1.5 }}>
                 {errorMessage}
               </p>
               <button
@@ -511,10 +706,11 @@ export default function MediaPlayer({ url, onBack }) {
                 className="premium-button"
                 style={{
                   backgroundColor: '#ef4444',
-                  marginTop: '8px',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  fontSize: '0.85rem'
+                  marginTop: '6px',
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  fontSize: '0.9rem',
+                  fontWeight: 700
                 }}
               >
                 Reload Stream
@@ -529,15 +725,15 @@ export default function MediaPlayer({ url, onBack }) {
           bottom: 0,
           left: 0,
           right: 0,
-          padding: isFullscreen ? '32px 40px' : '20px',
-          background: 'linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%)',
+          padding: isFullscreen ? '40px 48px' : '24px',
+          background: 'linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 50%, transparent 100%)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px',
+          gap: '16px',
           zIndex: 5,
           opacity: showControls ? 1 : 0,
-          transform: showControls ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'opacity 0.3s ease, transform 0.3s ease',
+          transform: showControls ? 'translateY(0)' : 'translateY(12px)',
+          transition: 'opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
           pointerEvents: showControls ? 'auto' : 'none'
         }}>
           {/* Seek Bar (For VoD or live buffer) */}
@@ -555,13 +751,13 @@ export default function MediaPlayer({ url, onBack }) {
                 value={currentTime}
                 onChange={handleSeek}
                 className="custom-slider"
-                style={{ flex: 1 }}
+                style={{ flex: 1, height: '6px' }}
               />
             ) : (
               <div style={{
-                height: '4px',
-                background: 'rgba(255,255,255,0.2)',
-                borderRadius: '2px',
+                height: '5px',
+                background: 'rgba(255,255,255,0.15)',
+                borderRadius: '3px',
                 flex: 1,
                 position: 'relative',
                 overflow: 'hidden'
@@ -583,13 +779,14 @@ export default function MediaPlayer({ url, onBack }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            width: '100%'
+            width: '100%',
+            position: 'relative'
           }}>
-            {/* Left Controls: Play, Volume, Time */}
+            {/* Left Controls: Play/Pause, Skips, Volume, Time */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '16px'
+              gap: '12px'
             }}>
               {/* Play / Pause */}
               <button
@@ -597,12 +794,55 @@ export default function MediaPlayer({ url, onBack }) {
                 className="control-btn"
                 style={{
                   color: '#ffffff',
-                  width: '38px',
-                  height: '38px',
-                  backgroundColor: 'rgba(255,255,255,0.1)'
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease'
                 }}
               >
                 {isPlaying ? <PauseIcon /> : <PlayIcon />}
+              </button>
+
+              {/* 10s Skip Backward */}
+              <button
+                onClick={() => skipTime(-10)}
+                className="control-btn"
+                title="Skip back 10s"
+                style={{
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <SkipBackIcon />
+              </button>
+
+              {/* 10s Skip Forward */}
+              <button
+                onClick={() => skipTime(10)}
+                className="control-btn"
+                title="Skip forward 10s"
+                style={{
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <SkipForwardIcon />
               </button>
 
               {/* Volume Controller */}
@@ -612,7 +852,8 @@ export default function MediaPlayer({ url, onBack }) {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '8px',
+                  marginLeft: '4px'
                 }}
               >
                 <button
@@ -645,12 +886,13 @@ export default function MediaPlayer({ url, onBack }) {
 
               {/* Time tracker / LIVE status */}
               <div style={{
-                color: 'rgba(255,255,255,0.9)',
+                color: 'rgba(255,255,255,0.95)',
                 fontSize: '0.85rem',
-                fontWeight: 500,
+                fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                marginLeft: '8px'
               }}>
                 {isLive ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -662,30 +904,206 @@ export default function MediaPlayer({ url, onBack }) {
                       display: 'inline-block',
                       boxShadow: '0 0 8px #ef4444'
                     }} />
-                    <span style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em', color: '#ef4444', fontWeight: 700 }}>LIVE</span>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.8rem' }}>({formatTime(currentTime)})</span>
+                    <span style={{ textTransform: 'uppercase', fontSize: '0.78rem', letterSpacing: '0.06em', color: '#ef4444', fontWeight: 800 }}>LIVE</span>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: '0.8rem' }}>({formatTime(currentTime)})</span>
                   </div>
                 ) : (
                   <span>
-                    {formatTime(currentTime)} <span style={{ color: 'rgba(255,255,255,0.4)', margin: '0 2px' }}>/</span> {formatTime(duration)}
+                    {formatTime(currentTime)} <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 2px' }}>/</span> {formatTime(duration)}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Right Controls: PiP, Fullscreen */}
+            {/* Right Controls: Aspect Ratio, Speed, Quality, PiP, Fullscreen */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px'
+              gap: '10px',
+              position: 'relative'
             }}>
+              {/* Aspect Ratio Selector */}
+              <button
+                onClick={cycleAspectRatio}
+                className="control-btn"
+                title={`Aspect Ratio: ${aspectRatio}`}
+                style={{
+                  color: 'rgba(255, 255, 255, 0.85)',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)'
+                }}
+              >
+                <AspectRatioIcon />
+                <span style={{ textTransform: 'capitalize', fontSize: '0.75rem' }}>{aspectRatio}</span>
+              </button>
+
+              {/* Playback Speed Controller */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => {
+                    setShowSpeedDropdown(!showSpeedDropdown);
+                    setShowQualityDropdown(false);
+                  }}
+                  className="control-btn"
+                  title="Playback Speed"
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.85)',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    padding: '6px 10px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)'
+                  }}
+                >
+                  {playbackSpeed === 1.0 ? '1x' : `${playbackSpeed}x`}
+                </button>
+
+                {showSpeedDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    right: 0,
+                    marginBottom: '8px',
+                    backgroundColor: 'rgba(20, 20, 20, 0.95)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    padding: '6px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: '90px',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                    backdropFilter: 'blur(10px)',
+                    zIndex: 20
+                  }}>
+                    {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((speed) => (
+                      <button
+                        key={speed}
+                        onClick={() => handleSpeedChange(speed)}
+                        style={{
+                          backgroundColor: playbackSpeed === speed ? 'var(--accent-color)' : 'transparent',
+                          color: '#ffffff',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: '6px',
+                          fontSize: '0.8rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          textAlign: 'center',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {speed === 1.0 ? 'Normal' : `${speed}x`}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quality / Resolution Selector */}
+              {qualityLevels.length > 0 && (
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => {
+                      setShowQualityDropdown(!showQualityDropdown);
+                      setShowSpeedDropdown(false);
+                    }}
+                    className="control-btn"
+                    title="Stream Quality"
+                    style={{
+                      color: 'rgba(255, 255, 255, 0.85)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)'
+                    }}
+                  >
+                    <SettingsIcon />
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>
+                      {currentQualityIndex === -1 ? 'Auto' : `${qualityLevels[currentQualityIndex]?.height}p`}
+                    </span>
+                  </button>
+
+                  {showQualityDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '100%',
+                      right: 0,
+                      marginBottom: '8px',
+                      backgroundColor: 'rgba(20, 20, 20, 0.95)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '12px',
+                      padding: '6px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      minWidth: '100px',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                      backdropFilter: 'blur(10px)',
+                      zIndex: 20
+                    }}>
+                      <button
+                        onClick={() => handleQualityChange(-1)}
+                        style={{
+                          backgroundColor: currentQualityIndex === -1 ? 'var(--accent-color)' : 'transparent',
+                          color: '#ffffff',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: '6px',
+                          fontSize: '0.8rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        Auto
+                      </button>
+                      {qualityLevels.map((lvl) => (
+                        <button
+                          key={lvl.index}
+                          onClick={() => handleQualityChange(lvl.index)}
+                          style={{
+                            backgroundColor: currentQualityIndex === lvl.index ? 'var(--accent-color)' : 'transparent',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '6px 12px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          {lvl.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Picture-in-Picture */}
               {document.pictureInPictureEnabled && (
                 <button
                   onClick={togglePip}
                   className="control-btn"
                   title="Picture-in-Picture"
-                  style={{ color: '#ffffff' }}
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.85)',
+                    padding: '6px 8px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 >
                   <PipIcon />
                 </button>
@@ -696,7 +1114,14 @@ export default function MediaPlayer({ url, onBack }) {
                 onClick={toggleFullscreen}
                 className="control-btn"
                 title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-                style={{ color: '#ffffff' }}
+                style={{
+                  color: 'rgba(255, 255, 255, 0.85)',
+                  padding: '6px 8px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
               >
                 {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
               </button>
@@ -705,21 +1130,28 @@ export default function MediaPlayer({ url, onBack }) {
         </div>
       </div>
 
-      <p style={{
-        margin: '12px auto 0',
-        maxWidth: '620px',
-        textAlign: 'center',
+      {/* Keyboard info hints */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '24px',
+        margin: '16px auto 0',
+        maxWidth: '640px',
         color: 'var(--text-tertiary)',
-        fontSize: '0.82rem',
-        lineHeight: 1.5
+        fontSize: '0.78rem',
+        flexWrap: 'wrap'
       }}>
-        Tip: Please be patient. Your stream may take a few seconds to start.
-      </p>
+        <span><kbd style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>Space</kbd> Play/Pause</span>
+        <span><kbd style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>← / →</kbd> Jump 10s</span>
+        <span><kbd style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>↑ / ↓</kbd> Volume</span>
+        <span><kbd style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>F</kbd> Fullscreen</span>
+        <span><kbd style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>M</kbd> Mute</span>
+      </div>
 
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        marginTop: '18px'
+        marginTop: '24px'
       }}>
         <button
           type="button"
@@ -730,7 +1162,7 @@ export default function MediaPlayer({ url, onBack }) {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '42px',
-            padding: '10px 18px',
+            padding: '10px 20px',
             borderRadius: '12px',
             fontSize: '0.9rem',
             fontWeight: 600,

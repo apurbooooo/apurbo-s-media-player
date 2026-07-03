@@ -63,7 +63,7 @@ function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
-  const [activeUrl, setActiveUrl] = useState(null);
+  const [activeStream, setActiveStream] = useState(null);
 
   // Sync theme changes to document attributes & localStorage
   useEffect(() => {
@@ -96,12 +96,12 @@ function App() {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  const handlePlayStream = (url) => {
-    setActiveUrl(url);
+  const handlePlayStream = (url, name = 'Custom Stream') => {
+    setActiveStream({ url, name });
   };
 
   const handleBackToInput = () => {
-    setActiveUrl(null);
+    setActiveStream(null);
   };
 
   const handleLogin = (username, password) => {
@@ -118,7 +118,7 @@ function App() {
     localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false);
     setShowSecurityNotice(false);
-    setActiveUrl(null);
+    setActiveStream(null);
   };
 
   return (
@@ -140,13 +140,13 @@ function App() {
           {/* Layout Content wrapper with standard alignment */}
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {/* Render URL input or custom MediaPlayer depending on active stream url */}
-            {!activeUrl ? (
+            {!activeStream ? (
               <div className="transition-layout">
                 <Hero onPlayStream={handlePlayStream} />
               </div>
             ) : (
               <div className="transition-layout">
-                <MediaPlayer url={activeUrl} onBack={handleBackToInput} />
+                <MediaPlayer url={activeStream.url} name={activeStream.name} onBack={handleBackToInput} />
               </div>
             )}
           </main>
