@@ -14,10 +14,9 @@ const roundOf32Matches = [
     matchNo: 'Match 90',
     date: '',
     network: 'FOX/Tele',
-    liveMinute: "64'",
-    active: true,
+    active: false,
     home: { name: 'Canada', flag: '🇨🇦', score: 0 },
-    away: { name: 'Morocco', flag: '🇲🇦', score: 1 }
+    away: { name: 'Morocco', flag: '🇲🇦', score: 3 }
   },
   {
     id: 'm110',
