@@ -146,7 +146,12 @@ function App() {
               </div>
             ) : (
               <div className="transition-layout">
-                <MediaPlayer url={activeStream.url} name={activeStream.name} onBack={handleBackToInput} />
+                <MediaPlayer
+                  url={activeStream.url}
+                  name={activeStream.name}
+                  onBack={handleBackToInput}
+                  onSwitchChannel={handlePlayStream}
+                />
               </div>
             )}
           </main>

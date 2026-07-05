@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import { supabase, isSupabaseConfigured } from '../services/supabaseService';
+import { BANGLA_CHANNELS, FEATURED_CHANNELS } from '../data/channels';
 
 // SVG Icons
 const PlayIcon = () => (
@@ -101,7 +102,7 @@ const AspectRatioIcon = () => (
   </svg>
 );
 
-export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
+export default function MediaPlayer({ url, name = 'Live Stream', onBack, onSwitchChannel }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const hlsRef = useRef(null);
@@ -127,6 +128,8 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
   const [showQualityDropdown, setShowQualityDropdown] = useState(false);
   const [showSpeedDropdown, setShowSpeedDropdown] = useState(false);
   const [viewerCount, setViewerCount] = useState(1);
+  const [bdTime, setBdTime] = useState('');
+  const [showChannelSwitcher, setShowChannelSwitcher] = useState(false);
 
   // Realtime Presence viewer counter
   useEffect(() => {
@@ -168,6 +171,23 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
       channel.unsubscribe();
     };
   }, [url]);
+
+  useEffect(() => {
+    const updateTime = () => {
+      setBdTime(
+        new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Dhaka',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(new Date())
+      );
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Auto-hide controls after 3 seconds of mouse inactivity
   useEffect(() => {
@@ -542,6 +562,8 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
   };
 
   const isLive = duration === Infinity || isNaN(duration);
+  const allChannels = [...FEATURED_CHANNELS, ...BANGLA_CHANNELS];
+  const relatedChannels = allChannels.filter((channel) => channel.name !== name && channel.streamUrl !== url).slice(0, 8);
 
   // Volume helper component selection
   const renderVolumeIcon = () => {
@@ -627,7 +649,7 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
               letterSpacing: '0.02em',
               textTransform: 'uppercase'
             }}>
-              Now Streaming:
+            Now Streaming:
             </span>
             <span style={{
               fontSize: '0.95rem',
@@ -640,6 +662,27 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
             }}>
               {name}
             </span>
+          </div>
+        </div>
+        <div className="glass" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '12px 16px',
+          borderRadius: '18px'
+        }}>
+          <div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              Bangladesh Time
+            </div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{bdTime}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              Watching
+            </div>
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{name}</div>
           </div>
         </div>
       </div>
@@ -698,6 +741,42 @@ export default function MediaPlayer({ url, name = 'Live Stream', onBack }) {
           pointerEvents: 'none'
         }}>
           🟢 {viewerCount} Watching Now
+        </div>
+
+        <div
+          className="player-channel-switcher"
+          style={{
+            top: isFullscreen ? '20px' : '16px',
+            right: isFullscreen ? '20px' : '16px'
+          }}
+          onMouseEnter={() => setShowChannelSwitcher(true)}
+          onMouseLeave={() => setShowChannelSwitcher(false)}
+        >
+          <button
+            type="button"
+            className="player-channel-switcher-toggle"
+            onClick={() => setShowChannelSwitcher((value) => !value)}
+          >
+            Media Controls
+          </button>
+          {showChannelSwitcher && (
+            <div className="player-channel-switcher-panel">
+              {relatedChannels.map((channel) => (
+                <button
+                  key={channel.name}
+                  type="button"
+                  className="player-channel-switcher-item"
+                  onClick={() => {
+                    setShowChannelSwitcher(false);
+                    onSwitchChannel?.(channel.streamUrl, channel.name);
+                  }}
+                >
+                  <span className="player-channel-switcher-dot" style={{ backgroundColor: channel.liveColor }} />
+                  <span className="player-channel-switcher-name">{channel.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Central Overlay States: Buffering/Loading */}
