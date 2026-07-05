@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const SunIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.5s ease' }}>
@@ -29,6 +29,25 @@ const LogoutIcon = () => (
 );
 
 export default function Navbar({ theme, onToggleTheme, onLogoClick, isLoggedIn, onLogout }) {
+  const [bdTime, setBdTime] = useState('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      setBdTime(
+        new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Dhaka',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(new Date())
+      );
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <nav className="glass" style={{
       position: 'sticky',
@@ -84,6 +103,34 @@ export default function Navbar({ theme, onToggleTheme, onLogoClick, isLoggedIn, 
 
       {/* Action Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="glass" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: '2px',
+          padding: '8px 12px',
+          borderRadius: '14px',
+          border: '1px solid var(--surface-border)'
+        }}>
+          <span style={{
+            fontSize: '0.68rem',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: 'var(--text-tertiary)'
+          }}>
+            BD Time
+          </span>
+          <span style={{
+            fontSize: '0.95rem',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {bdTime}
+          </span>
+        </div>
+
         {/* Logout Button (Only if logged in) */}
         {isLoggedIn && (
           <button
