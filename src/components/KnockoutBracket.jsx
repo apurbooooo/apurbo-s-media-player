@@ -1,111 +1,220 @@
 import React from 'react';
 
-const roundOf32Matches = [
+const leftRound = [
   {
-    id: 'm57',
-    matchNo: 'FRA -575',
-    date: 'Jul 5 - 3:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'Paraguay', flag: '🇵🇾' },
-    away: { name: 'France', flag: '🇫🇷' }
+    id: 'l1',
+    teams: [
+      { code: 'GER', flag: '🇩🇪', score: 1 },
+      { code: 'PAR', flag: '🇵🇾', score: 1 }
+    ]
   },
   {
-    id: 'm90',
-    matchNo: 'Match 90',
-    date: '',
-    network: 'FOX/Tele',
-    active: false,
-    home: { name: 'Canada', flag: '🇨🇦', score: 0 },
-    away: { name: 'Morocco', flag: '🇲🇦', score: 3 }
+    id: 'l2',
+    teams: [
+      { code: 'FRA', flag: '🇫🇷', score: 3 },
+      { code: 'SWE', flag: '🇸🇪', score: 0 }
+    ]
   },
   {
-    id: 'm110',
-    matchNo: 'ESP +110',
-    date: 'Jul 7 - 1:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'Portugal', flag: '🇵🇹' },
-    away: { name: 'Spain', flag: '🇪🇸' }
+    id: 'l3',
+    teams: [
+      { code: 'RSA', flag: '🇿🇦', score: 0 },
+      { code: 'CAN', flag: '🇨🇦', score: 1 }
+    ]
   },
   {
-    id: 'm155',
-    matchNo: 'USA +155',
-    date: 'Jul 7 - 6:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'USA', flag: '🇺🇸' },
-    away: { name: 'Belgium', flag: '🇧🇪' }
+    id: 'l4',
+    teams: [
+      { code: 'NED', flag: '🇳🇱', score: 1 },
+      { code: 'MAR', flag: '🇲🇦', score: 1 }
+    ]
   },
   {
-    id: 'm125',
-    matchNo: 'BRA -125',
-    date: 'Jul 6 - 2:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'Brazil', flag: '🇧🇷' },
-    away: { name: 'Norway', flag: '🇳🇴' }
+    id: 'l5',
+    teams: [
+      { code: 'POR', flag: '🇵🇹', score: 2 },
+      { code: 'CRO', flag: '🇭🇷', score: 1 }
+    ]
   },
   {
-    id: 'm140',
-    matchNo: 'ENG +140',
-    date: 'Jul 6 - 6:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'Mexico', flag: '🇲🇽' },
-    away: { name: 'England', flag: 'ENG' }
+    id: 'l6',
+    teams: [
+      { code: 'ESP', flag: '🇪🇸', score: 3 },
+      { code: 'AUT', flag: '🇦🇹', score: 0 }
+    ]
   },
   {
-    id: 'm285',
-    matchNo: 'ARG -285',
-    date: 'Jul 7 - 10:00 PM',
-    network: 'FOX/Tele',
-    home: { name: 'Argentina', flag: '🇦🇷' },
-    away: { name: 'Egypt', flag: '🇪🇬' }
+    id: 'l7',
+    teams: [
+      { code: 'USA', flag: '🇺🇸', score: 2 },
+      { code: 'BIH', flag: '🇧🇦', score: 0 }
+    ]
   },
   {
-    id: 'm120',
-    matchNo: 'COL +120',
-    date: 'Jul 8 - 2:00 AM',
-    network: 'FOX/Tele',
-    home: { name: 'Switzerland', flag: '🇨🇭' },
-    away: { name: 'Colombia', flag: '🇨🇴' }
+    id: 'l8',
+    teams: [
+      { code: 'BEL', flag: '🇧🇪', score: 3 },
+      { code: 'SEN', flag: '🇸🇳', score: 2 }
+    ]
   }
 ];
 
-const r16Matches = [
-  { id: 'm97', matchNo: 'Match 97', date: 'Jul 10 - 2:00 AM', network: 'FOX/Tele', home: 'RD16 W1', away: 'RD16 W2' },
-  { id: 'm98', matchNo: 'Match 98', date: 'Jul 11 - 1:00 AM', network: 'FOX/Tele', home: 'RD16 W5', away: 'RD16 W6' },
-  { id: 'm99', matchNo: 'Match 99', date: 'Jul 12 - 3:00 AM', network: 'FOX/Tele', home: 'RD16 W3', away: 'RD16 W4' },
-  { id: 'm100', matchNo: 'Match 100', date: 'Jul 12 - 7:00 AM', network: 'FOX/Tele', home: 'RD16 W7', away: 'RD16 W8' }
+const rightRound = [
+  {
+    id: 'r1',
+    teams: [
+      { code: 'BRA', flag: '🇧🇷', score: 2 },
+      { code: 'JPN', flag: '🇯🇵', score: 1 }
+    ]
+  },
+  {
+    id: 'r2',
+    teams: [
+      { code: 'CIV', flag: '🇨🇮', score: 1 },
+      { code: 'NOR', flag: '🇳🇴', score: 2 }
+    ]
+  },
+  {
+    id: 'r3',
+    teams: [
+      { code: 'MEX', flag: '🇲🇽', score: 2 },
+      { code: 'ECU', flag: '🇪🇨', score: 0 }
+    ]
+  },
+  {
+    id: 'r4',
+    teams: [
+      { code: 'ENG', flag: '🏴', score: 2 },
+      { code: 'GOD', flag: '🌍', score: 1 }
+    ]
+  },
+  {
+    id: 'r5',
+    teams: [
+      { code: 'ARG', flag: '🇦🇷', score: 3 },
+      { code: 'EGY', flag: '🇪🇬', score: 2 }
+    ]
+  },
+  {
+    id: 'r6',
+    teams: [
+      { code: 'SUI', flag: '🇨🇭', score: 2 },
+      { code: 'ALG', flag: '🇩🇿', score: 0 }
+    ]
+  },
+  {
+    id: 'r7',
+    teams: [
+      { code: 'COL', flag: '🇨🇴', score: 1 },
+      { code: 'GHA', flag: '🇬🇭', score: 0 }
+    ]
+  },
+  {
+    id: 'r8',
+    teams: [
+      { code: 'AUS', flag: '🇦🇺', score: 1 },
+      { code: 'EGY', flag: '🇪🇬', score: 1 }
+    ]
+  }
 ];
 
-const qfMatches = [
-  { id: 'm101', matchNo: 'Match 101', date: 'Jul 15 - 1:00 AM', network: 'FOX/Tele', home: 'QF W1', away: 'QF W2' },
-  { id: 'm102', matchNo: 'Match 102', date: 'Jul 16 - 1:00 AM', network: 'FOX/Tele', home: 'QF W3', away: 'QF W4' }
+const leftWinners = [
+  {
+    id: 'lw1',
+    teams: [
+      { code: 'FRA', flag: '🇫🇷', score: 2 },
+      { code: 'ESP', flag: '🇪🇸', score: 1 }
+    ]
+  },
+  {
+    id: 'lw2',
+    teams: [
+      { code: 'CAN', flag: '🇨🇦', score: 0 },
+      { code: 'MAR', flag: '🇲🇦', score: 3 }
+    ]
+  },
+  {
+    id: 'lw3',
+    teams: [
+      { code: 'POR', flag: '🇵🇹', score: 0 },
+      { code: 'ESP', flag: '🇪🇸', score: 1 }
+    ]
+  },
+  {
+    id: 'lw4',
+    teams: [
+      { code: 'USA', flag: '🇺🇸', score: 1 },
+      { code: 'BEL', flag: '🇧🇪', score: 4 }
+    ]
+  }
 ];
 
-function TeamRow({ team, placeholder = false }) {
-  const score = team && Object.prototype.hasOwnProperty.call(team, 'score') ? team.score : null;
+const rightWinners = [
+  {
+    id: 'rw1',
+    teams: [
+      { code: 'ENG', flag: '🏴', score: 2 },
+      { code: 'ARG', flag: '🇦🇷', score: 1 }
+    ]
+  },
+  {
+    id: 'rw2',
+    teams: [
+      { code: 'MEX', flag: '🇲🇽', score: 2 },
+      { code: 'ENG', flag: '🇬🇧', score: 3 }
+    ]
+  },
+  {
+    id: 'rw3',
+    teams: [
+      { code: 'ARG', flag: '🇦🇷', score: 3 },
+      { code: 'ECU', flag: '🇪🇨', score: 2 }
+    ]
+  },
+  {
+    id: 'rw4',
+    teams: [
+      { code: 'SUI', flag: '🇨🇭', score: 2 },
+      { code: 'COL', flag: '🇨🇴', score: 0 }
+    ]
+  }
+];
 
+function TeamRow({ team, isWinner = false }) {
   return (
-    <div className={`bracket-team-row ${placeholder ? 'placeholder' : ''}`}>
-      <span className="bracket-flag">{team?.flag || '◩'}</span>
-      <span className="bracket-team-name">{team?.name || team}</span>
-      {score !== null && <span className="bracket-score">{score}</span>}
+    <div className={`bracket-team-row ${isWinner ? 'is-winner' : ''}`}>
+      <span className="bracket-flag">{team.flag}</span>
+      <span className="bracket-team-name">{team.code}</span>
+      <span className="bracket-score">{team.score}</span>
     </div>
   );
 }
 
-function MatchCard({ match, className = '', children }) {
+function MatchCard({ match, label, meta, className = '', compact = false }) {
   return (
-    <article className={`bracket-card ${match.active ? 'is-live' : ''} ${className}`}>
+    <article className={`bracket-card ${compact ? 'is-compact' : ''} ${className}`.trim()}>
       <div className="bracket-card-top">
-        <span>{match.matchNo}</span>
+        <span className="bracket-card-label">{label}</span>
+        {meta ? <span className="bracket-card-meta">{meta}</span> : null}
       </div>
-      {children}
-      <TeamRow team={typeof match.home === 'string' ? { name: match.home } : match.home} placeholder={typeof match.home === 'string'} />
-      <TeamRow team={typeof match.away === 'string' ? { name: match.away } : match.away} placeholder={typeof match.away === 'string'} />
-      {match.liveMinute && <div className="bracket-live-minute">{match.liveMinute}</div>}
-      <div className="bracket-card-bottom">
-        <span>{match.date}</span>
-        <span>{match.network}</span>
+      <TeamRow team={match.teams[0]} isWinner={match.teams[0].score > match.teams[1].score} />
+      <TeamRow team={match.teams[1]} isWinner={match.teams[1].score > match.teams[0].score} />
+    </article>
+  );
+}
+
+function FinalCard({ title, date, badge, teams, className = '' }) {
+  return (
+    <article className={`bracket-card bracket-card-final ${className}`.trim()}>
+      <div className="bracket-card-top bracket-card-top-final">
+        <span className="bracket-card-label">{title}</span>
+        <span className="bracket-card-meta">{date}</span>
       </div>
+      <div className="bracket-final-teams">
+        <TeamRow team={teams[0]} isWinner={teams[0].score > teams[1].score} />
+        <TeamRow team={teams[1]} isWinner={teams[1].score > teams[0].score} />
+      </div>
+      <span className={`bracket-badge ${badge.toLowerCase().replace(/\s+/g, '-')}`}>{badge}</span>
     </article>
   );
 }
@@ -119,72 +228,81 @@ export default function KnockoutBracket() {
     <section className="knockout-shell" aria-labelledby="world-cup-bracket-title">
       <div className="knockout-heading">
         <h2 id="world-cup-bracket-title">FIFA World Cup 2026 Bracket</h2>
-        <p>Live knockout path updated from the reference bracket.</p>
+        <p>Reference bracket view updated to match the current knockout layout.</p>
       </div>
 
       <div className="bracket-scroll" role="img" aria-label="FIFA World Cup 2026 knockout bracket">
         <div className="bracket-stage">
-          <div className="bracket-column bracket-column-r32">
-            {roundOf32Matches.map((match, index) => (
+          <div className="bracket-column bracket-column-left">
+            {leftRound.map((match, index) => (
               <div className="bracket-slot" key={match.id}>
-                <MatchCard match={match} />
+                <MatchCard match={match} label={match.teams[0].code} meta={index === 0 ? 'Jul 5' : ''} />
                 <Connector variant={index % 2 === 0 ? 'down' : 'up'} />
               </div>
             ))}
           </div>
 
-          <div className="bracket-column bracket-column-r16">
-            {r16Matches.map((match, index) => (
-              <div className="bracket-slot bracket-slot-wide" key={match.id}>
-                <MatchCard match={match} />
+          <div className="bracket-column bracket-column-left-next">
+            {leftWinners.map((match, index) => (
+              <div className="bracket-slot bracket-slot-mid" key={match.id}>
+                <MatchCard match={match} label={match.teams[0].code} meta={index === 0 ? 'Today' : ''} compact />
                 <Connector variant={index % 2 === 0 ? 'down-long' : 'up-long'} />
               </div>
             ))}
           </div>
 
-          <div className="bracket-column bracket-column-qf">
-            {qfMatches.map((match, index) => (
-              <div className="bracket-slot bracket-slot-tall" key={match.id}>
-                <MatchCard match={match} />
-                <Connector variant={index === 0 ? 'down-final' : 'up-final'} />
+          <div className="bracket-column bracket-column-center">
+            <div className="bracket-trophy-mark" aria-hidden="true">
+              <span>🏆</span>
+              <strong>CHAMPION</strong>
+            </div>
+
+            <div className="bracket-final-stack">
+              <FinalCard
+                className="bracket-final-card"
+                title="TBD  TBD"
+                date="Jul 19"
+                badge="FINAL"
+                teams={[
+                  { code: 'TBD', flag: '◑', score: 0 },
+                  { code: 'TBD', flag: '◑', score: 0 }
+                ]}
+              />
+
+              <FinalCard
+                className="bracket-third-card"
+                title="TBD  TBD"
+                date="Jul 19"
+                badge="BRONZE-FINAL"
+                teams={[
+                  { code: 'TBD', flag: '◑', score: 0 },
+                  { code: 'TBD', flag: '◑', score: 0 }
+                ]}
+              />
+            </div>
+          </div>
+
+          <div className="bracket-column bracket-column-right-next">
+            {rightWinners.map((match, index) => (
+              <div className="bracket-slot bracket-slot-mid" key={match.id}>
+                <MatchCard match={match} label={match.teams[0].code} meta={index === 0 ? 'Tomorrow' : ''} compact />
+                <Connector variant={index % 2 === 0 ? 'down-long' : 'up-long'} />
               </div>
             ))}
           </div>
 
-          <div className="bracket-column bracket-column-finals">
-            <div className="bracket-trophy-mark" aria-hidden="true">
-              <span>🏆</span>
-              <strong>FIFA</strong>
-            </div>
-
-            <MatchCard
-              className="bracket-final-card"
-              match={{
-                matchNo: '2026 FIFA World Cup Final',
-                date: 'Jul 20 - 1:00 AM',
-                network: 'FOX/Tele',
-                home: 'SF W1',
-                away: 'SF W2'
-              }}
-            >
-              <p className="bracket-venue">East Rutherford, New Jersey</p>
-            </MatchCard>
-
-            <MatchCard
-              className="bracket-third-card"
-              match={{
-                matchNo: '3rd-Place Match',
-                date: 'Jul 19 - 3:00 AM',
-                network: 'FOX/Tele',
-                home: 'SF L1',
-                away: 'SF L2'
-              }}
-            >
-              <p className="bracket-venue">Miami Gardens, Florida</p>
-            </MatchCard>
+          <div className="bracket-column bracket-column-right">
+            {rightRound.map((match, index) => (
+              <div className="bracket-slot" key={match.id}>
+                <MatchCard match={match} label={match.teams[0].code} meta={index === 0 ? 'Jul 5' : ''} />
+                <Connector variant={index % 2 === 0 ? 'down' : 'up'} />
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      <div className="bracket-mobile-note">Swipe horizontally to see the full bracket.</div>
     </section>
   );
 }

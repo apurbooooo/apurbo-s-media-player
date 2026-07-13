@@ -36,9 +36,10 @@ export default function Navbar({ theme, onToggleTheme, onLogoClick, isLoggedIn, 
       setBdTime(
         new Intl.DateTimeFormat('en-GB', {
           timeZone: 'Asia/Dhaka',
-          hour: '2-digit',
+          hour: 'numeric',
           minute: '2-digit',
-          second: '2-digit'
+          second: '2-digit',
+          hour12: true
         }).format(new Date())
       );
     };
@@ -119,7 +120,7 @@ export default function Navbar({ theme, onToggleTheme, onLogoClick, isLoggedIn, 
             textTransform: 'uppercase',
             color: 'var(--text-tertiary)'
           }}>
-            BD Time
+            BDT Time
           </span>
           <span style={{
             fontSize: '0.95rem',
@@ -127,7 +128,7 @@ export default function Navbar({ theme, onToggleTheme, onLogoClick, isLoggedIn, 
             color: 'var(--text-primary)',
             fontVariantNumeric: 'tabular-nums'
           }}>
-            {bdTime}
+            {bdTime} BDT
           </span>
         </div>
 
